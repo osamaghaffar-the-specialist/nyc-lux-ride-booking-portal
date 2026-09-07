@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Book a Ride | NYC Lux Ride</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.2.3/dist/css/intlTelInput.min.css" />
+  <style>
+    :root{
+      --bg:#f4f1eb;
+      --surface:#ffffff;
+      --surface-2:#f8f6f2;
+      --ink:#111111;
+      --muted:#6f6a61;
+      --line:#dfd9cf;
+      --gold:#b88b3e;
+      --gold-2:#d5b06b;
+      --black:#080808;
+      --ok:#227a53;
+      --danger:#a63838;
+      --shadow:0 22px 60px rgba(25,18,8,.10);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(184,139,62,.10), transparent 32rem),
+        var(--bg);
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit}
+
+    .topbar{
+      background:#050505;
+      color:#fff;
+      padding:10px 24px;
+      font-size:13px;
+    }
+    .topbar-inner{
+      max-width:1220px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+    .topbar span{opacity:.86}
+    .header{
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(0,0,0,.08);
+      position:sticky;
+      top:0;
+      z-index:40;
+    }
+    .header-inner{
+      max-width:1220px;
+      margin:0 auto;
+      min-height:82px;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:13px;
+      text-decoration:none;
+    }
+    .brand-mark{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 50% 50%, #111 0 46%, transparent 47%),
+        linear-gradient(145deg,var(--gold-2),#7b571d);
+      position:relative;
+      box-shadow:inset 0 0 0 2px #0b0b0b, inset 0 0 0 4px var(--gold-2);
+    }
+    .brand-mark:after{
+      content:"NYC";
+      color:var(--gold-2);
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-family:Georgia,serif;
+      font-size:12px;
+      letter-spacing:1px;
+      font-weight:700;
+    }
+    .brand-copy strong{
+      display:block;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:21px;
+      letter-spacing:.08em;
+    }
+    .brand-copy small{
+      display:block;
+      color:#7a7165;
+      letter-spacing:.22em;
+      font-size:9px;
+      margin-top:3px;
+    }
+    .header-contact{
+      text-align:right;
+      font-size:13px;
+      color:#4f4a43;
+    }
+    .header-contact strong{display:block;color:#111;margin-bottom:2px}
+
+    .hero{
+      background:
+        linear-gradient(100deg,rgba(0,0,0,.88),rgba(0,0,0,.58)),
+        url("https://www.nycluxride.com/hero-new.webp") center/cover;
+      color:#fff;
+    }
+    .hero-inner{
+      max-width:1220px;
+      margin:0 auto;
+      padding:56px 24px 48px;
+    }
+    .eyebrow{
+      color:var(--gold-2);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.22em;
+    }
+    h1{
+      margin:12px 0 12px;
+      max-width:720px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(38px,5vw,67px);
+      line-height:.98;
+      font-weight:500;
+    }
+    .hero p{
+      max-width:700px;
+      margin:0;
+      color:rgba(255,255,255,.78);
+      font-size:16px;
+      line-height:1.7;
+    }
+
+    .page{
+      max-width:1220px;
+      margin:0 auto;
+      padding:34px 24px 70px;
+    }
+
+    .stepper-wrap{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 22px;
+      box-shadow:0 12px 32px rgba(25,18,8,.05);
+      margin-top:-30px;
+      position:relative;
+      z-index:5;
+    }
+    .stepper{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:0;
+      position:relative;
+    }
+    .stepper:before{
+      content:"";
+      position:absolute;
+      top:18px;
+      left:16.66%;
+      right:16.66%;
+      height:1px;
+      background:var(--line);
+      z-index:0;
+    }
+    .step{
+      position:relative;
+      z-index:1;
+      text-align:center;
+      color:#968d80;
+    }
+    .step-num{
+      width:37px;
+      height:37px;
+      border-radius:50%;
+      border:1px solid var(--line);
+      background:#fff;
+      margin:0 auto 9px;
+      display:grid;
+      place-items:center;
+      font-size:12px;
+      font-weight:800;
+      transition:.25s ease;
+    }
+    .step span{
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .step.active,.step.complete{color:#111}
+    .step.active .step-num{
+      background:var(--black);
+      color:var(--gold-2);
+      border-color:var(--black);
+      box-shadow:0 0 0 5px rgba(184,139,62,.12);
+    }
+    .step.complete .step-num{
+      background:var(--gold);
+      color:#fff;
+      border-color:var(--gold);
+    }
+
+    .panel{
+      margin-top:28px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel-head{
+      padding:28px 30px 22px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-end;
+    }
+    .panel-head h2{
+      margin:5px 0 0;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:32px;
+      font-weight:500;
+    }
+    .panel-head p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .secure-note{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .secure-dot{
+      width:8px;height:8px;border-radius:50%;background:var(--ok);
+    }
+
+    .panel-body{padding:30px}
+    .screen{display:none}
+    .screen.active{display:block;animation:fade .28s ease}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    .section-title{
+      margin:4px 0 14px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:#7a7165;
+      font-weight:850;
+    }
+
+    .trip-types{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-bottom:28px;
+    }
+    .choice{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:18px 15px;
+      text-align:left;
+      transition:.2s ease;
+      min-height:90px;
+    }
+    .choice:hover{border-color:#bfa87f;transform:translateY(-1px)}
+    .choice.active{
+      border-color:var(--gold);
+      background:linear-gradient(180deg,#fffdf9,#f8f0e1);
+      box-shadow:0 0 0 3px rgba(184,139,62,.10);
+    }
+    .choice strong{display:block;font-size:16px;margin-bottom:5px}
+    .choice small{color:var(--muted);line-height:1.4}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .field{min-width:0}
+    .field.full{grid-column:1/-1}
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:#514b43;
+      margin:0 0 8px;
+      letter-spacing:.02em;
+    }
+    .req{color:#9f6428}
+    input,select,textarea{
+      width:100%;
+      border:1px solid #d8d2c8;
+      background:#fff;
+      color:#151515;
+      border-radius:12px;
+      min-height:50px;
+      padding:12px 14px;
+      outline:none;
+      transition:.18s ease;
+    }
+    textarea{min-height:110px;resize:vertical}
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(184,139,62,.12);
+    }
+    .invalid{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(166,56,56,.08)!important}
+    .help{font-size:11px;color:#8a8175;margin-top:7px;line-height:1.5}
+    .location-wrap{position:relative}
+    .location-wrap:before{
+      content:"⌖";
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--gold);
+      z-index:2;
+      font-size:18px;
+    }
+    .location-wrap input{padding-left:39px}
+    .map-soon{
+      margin-top:10px;
+      border:1px dashed #cfc5b5;
+      background:#faf7f1;
+      color:#7d7367;
+      padding:11px 13px;
+      border-radius:10px;
+      font-size:11px;
+    }
+
+    .stop-list{display:grid;gap:10px;margin-top:12px}
+    .stop-row{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .icon-btn{
+      border:1px solid #d8d2c8;
+      background:#fff;
+      width:50px;
+      border-radius:12px;
+      font-size:20px;
+      color:#6c6255;
+    }
+    .add-stop{
+      margin-top:12px;
+      border:0;
+      background:transparent;
+      color:#8b6425;
+      font-weight:800;
+      padding:0;
+      font-size:13px;
+    }
+
+    .vehicle-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+    .vehicle-card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      transition:.22s ease;
+      position:relative;
+    }
+    .vehicle-card:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(20,15,6,.09)}
+    .vehicle-card.selected{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(184,139,62,.12),0 18px 40px rgba(20,15,6,.09);
+    }
+    .vehicle-img{
+      height:225px;
+      background:#eee;
+      overflow:hidden;
+    }
+    .vehicle-img img{width:100%;height:100%;object-fit:cover;display:block}
+    .vehicle-content{padding:20px}
+    .vehicle-top{display:flex;justify-content:space-between;gap:16px}
+    .vehicle-top h3{
+      margin:0;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:25px;
+      font-weight:500;
+    }
+    .badge{
+      background:#f4eee3;
+      color:#76531e;
+      border:1px solid #e5d6bd;
+      padding:7px 9px;
+      border-radius:999px;
+      font-size:10px;
+      height:max-content;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .vehicle-sub{color:var(--muted);font-size:13px;margin-top:5px}
+    .specs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:16px 0;
+    }
+    .spec{
+      background:#f7f5f1;
+      border:1px solid #e5e0d7;
+      color:#514b43;
+      border-radius:9px;
+      padding:8px 10px;
+      font-size:11px;
+      font-weight:700;
+    }
+    .select-vehicle{
+      width:100%;
+      border:1px solid #151515;
+      border-radius:11px;
+      background:#fff;
+      color:#111;
+      min-height:46px;
+      font-weight:850;
+    }
+    .selected .select-vehicle{
+      background:#111;
+      color:var(--gold-2);
+    }
+
+    .summary-bar{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      background:#0b0b0b;
+      color:#fff;
+      border-radius:16px;
+      padding:16px 18px;
+      margin-bottom:24px;
+    }
+    .summary-bar small{
+      display:block;
+      text-transform:uppercase;
+      color:#a99e8e;
+      font-size:9px;
+      letter-spacing:.12em;
+      font-weight:800;
+      margin-bottom:5px;
+    }
+    .summary-bar strong{font-size:13px;line-height:1.35}
+
+    .review-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);
+      gap:24px;
+    }
+    .review-card,.contact-card{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:17px;
+      padding:22px;
+    }
+    .review-card h3,.contact-card h3{
+      margin:0 0 18px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:24px;
+      font-weight:500;
+    }
+    .route{
+      display:grid;
+      gap:0;
+      margin-bottom:18px;
+    }
+    .route-item{
+      display:grid;
+      grid-template-columns:22px 1fr;
+      gap:12px;
+      align-items:start;
+      padding-bottom:16px;
+      position:relative;
+    }
+    .route-item:not(:last-child):after{
+      content:"";
+      position:absolute;
+      left:6px;
+      top:17px;
+      bottom:0;
+      width:1px;
+      background:#d7c9b1;
+    }
+    .route-dot{
+      width:13px;height:13px;border:3px solid var(--gold);border-radius:50%;margin-top:3px;background:#fff;
+    }
+    .route-dot.end{background:var(--gold)}
+    .route-item small{
+      display:block;
+      color:#8a8175;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:9px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .route-item strong{font-size:14px;line-height:1.5}
+    .review-map{
+      height:190px;
+      border-radius:14px;
+      border:1px dashed #cfc5b5;
+      background:
+        linear-gradient(45deg,#f7f3ec 25%,transparent 25%,transparent 75%,#f7f3ec 75%),
+        linear-gradient(45deg,#f7f3ec 25%,#fff 25%,#fff 75%,#f7f3ec 75%);
+      background-size:28px 28px;
+      background-position:0 0,14px 14px;
+      display:grid;
+      place-items:center;
+      color:#7f7466;
+      text-align:center;
+      padding:25px;
+      font-size:12px;
+      line-height:1.5;
+      margin:18px 0;
+    }
+    .details{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:18px;
+    }
+    .detail{
+      background:#f7f5f1;
+      border-radius:11px;
+      padding:12px;
+    }
+    .detail small{
+      display:block;
+      color:#857c70;
+      font-size:9px;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .detail strong{font-size:12px}
+    .chosen-vehicle{
+      margin-top:18px;
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:15px;
+      align-items:center;
+    }
+    .chosen-vehicle img{
+      width:120px;
+      height:76px;
+      object-fit:cover;
+      border-radius:10px;
+    }
+    .chosen-vehicle small{
+      text-transform:uppercase;
+      color:#857c70;
+      font-size:9px;
+      letter-spacing:.1em;
+      font-weight:800;
+    }
+    .chosen-vehicle strong{display:block;font-size:16px;margin-top:4px}
+    .consent{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:10px;
+      align-items:start;
+      margin-top:16px;
+      color:#6f675c;
+      font-size:11px;
+      line-height:1.55;
+    }
+    .consent input{width:17px;height:17px;min-height:0;margin:1px 0 0}
+    .quote-note{
+      background:#f6f0e5;
+      border:1px solid #e3d3b6;
+      padding:13px 14px;
+      border-radius:11px;
+      font-size:11px;
+      color:#6b5a3f;
+      line-height:1.5;
+      margin-top:16px;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-top:26px;
+      border-top:1px solid var(--line);
+      padding-top:22px;
+    }
+    .btn{
+      border:0;
+      min-height:50px;
+      padding:0 22px;
+      border-radius:11px;
+      font-weight:850;
+      letter-spacing:.02em;
+    }
+    .btn-primary{
+      background:#0b0b0b;
+      color:#d9b56f;
+      box-shadow:0 10px 24px rgba(0,0,0,.15);
+    }
+    .btn-primary:hover{background:#161616}
+    .btn-secondary{
+      background:#f3efe8;
+      color:#463f36;
+      border:1px solid #ddd5c9;
+    }
+    .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+    .success{
+      text-align:center;
+      padding:46px 20px 54px;
+      max-width:740px;
+      margin:0 auto;
+    }
+    .success-icon{
+      width:72px;height:72px;border-radius:50%;
+      background:#0b0b0b;color:var(--gold-2);
+      display:grid;place-items:center;
+      margin:0 auto 22px;
+      font-size:30px;
+      box-shadow:0 0 0 9px rgba(184,139,62,.12);
+    }
+    .success h2{
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:38px;
+      font-weight:500;
+      margin:0 0 12px;
+    }
+    .success p{color:var(--muted);line-height:1.7;margin:0 auto;max-width:570px}
+    .ref-box{
+      margin:25px auto 0;
+      max-width:390px;
+      background:#f7f3ec;
+      border:1px solid #e3dacd;
+      border-radius:14px;
+      padding:18px;
+    }
+    .ref-box small{display:block;color:#877c6d;text-transform:uppercase;letter-spacing:.14em;font-size:9px;font-weight:800}
+    .ref-box strong{display:block;font-size:22px;margin-top:5px;letter-spacing:.06em}
+
+    .toast{
+      position:fixed;
+      right:22px;
+      bottom:22px;
+      background:#161616;
+      color:#fff;
+      padding:14px 17px;
+      border-radius:11px;
+      box-shadow:0 16px 40px rgba(0,0,0,.24);
+      font-size:12px;
+      transform:translateY(20px);
+      opacity:0;
+      pointer-events:none;
+      transition:.25s ease;
+      z-index:99;
+    }
+    .toast.show{transform:none;opacity:1}
+
+    .footer{
+      background:#070707;
+      color:#fff;
+      padding:30px 24px;
+      text-align:center;
+      font-size:12px;
+    }
+    .footer strong{color:var(--gold-2)}
+    .footer p{margin:6px 0;color:#9e978e}
+
+    @media(max-width:860px){
+      .review-layout{grid-template-columns:1fr}
+      .vehicle-grid{grid-template-columns:1fr}
+      .summary-bar{grid-template-columns:1fr 1fr}
+      .grid.three{grid-template-columns:1fr 1fr}
+      .panel-head{align-items:flex-start;flex-direction:column}
+    }
+    @media(max-width:640px){
+      .topbar{display:none}
+      .header-inner{min-height:70px;padding:0 16px}
+      .header-contact{display:none}
+      .brand-copy strong{font-size:18px}
+      .hero-inner{padding:42px 18px 54px}
+      .hero p{font-size:14px}
+      .page{padding:24px 12px 55px}
+      .stepper-wrap{padding:15px 8px;margin-top:-27px}
+      .step span{font-size:8px;letter-spacing:.06em}
+      .stepper:before{left:16%;right:16%}
+      .panel{border-radius:17px}
+      .panel-head{padding:22px 18px 18px}
+      .panel-head h2{font-size:27px}
+      .panel-body{padding:20px 16px}
+      .trip-types{grid-template-columns:1fr}
+      .choice{min-height:74px}
+      .grid,.grid.three{grid-template-columns:1fr}
+      .vehicle-img{height:190px}
+      .summary-bar{grid-template-columns:1fr 1fr}
+      .details{grid-template-columns:1fr 1fr}
+      .chosen-vehicle{grid-template-columns:95px 1fr}
+      .chosen-vehicle img{width:95px;height:68px}
+      .actions{
+        flex-direction:column-reverse;
+        align-items:stretch;
+        position:sticky;
+        bottom:0;
+        background:#fff;
+        margin-left:-16px;
+        margin-right:-16px;
+        padding:14px 16px;
+        border-top:1px solid var(--line);
+        z-index:8;
+      }
+      .btn{width:100%}
+      .success h2{font-size:31px}
+    }
+  
+    .autocomplete-host{
+      width:100%;
+      min-height:52px;
+      position:relative;
+    }
+    .autocomplete-host gmp-place-autocomplete{
+      display:block;
+      width:100%;
+      min-height:52px;
+      border:1px solid #d8d2c8;
+      border-radius:12px;
+      background:#fff;
+      overflow:visible;
+    }
+    .autocomplete-host.invalid gmp-place-autocomplete{
+      border-color:var(--danger);
+      box-shadow:0 0 0 3px rgba(166,56,56,.08);
+    }
+    .selected-place{
+      margin-top:8px;
+      font-size:11px;
+      color:#756c60;
+      line-height:1.45;
+      padding-left:2px;
+    }
+    .selected-place.ok{color:var(--ok);font-weight:700}
+    .selected-place.error{color:var(--danger);font-weight:700}
+
+    .route-preview{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      border:1px solid #e1d7c8;
+      background:linear-gradient(180deg,#fbf8f3,#f5efe5);
+      border-radius:14px;
+      padding:13px;
+    }
+    .route-preview > div,
+    .review-route-stats > div{
+      background:#fff;
+      border:1px solid #e8e1d8;
+      border-radius:10px;
+      padding:12px 13px;
+    }
+    .route-preview small,
+    .review-route-stats small{
+      display:block;
+      font-size:9px;
+      text-transform:uppercase;
+      letter-spacing:.11em;
+      color:#877c6e;
+      font-weight:850;
+      margin-bottom:5px;
+    }
+    .route-preview strong,
+    .review-route-stats strong{
+      font-size:13px;
+    }
+    .live-map{
+      padding:0 !important;
+      display:block !important;
+      position:relative;
+      min-height:300px;
+      overflow:hidden;
+    }
+    .map-loading{
+      min-height:300px;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      color:#7f7466;
+      text-align:center;
+      background:#f7f3ec;
+    }
+    .review-route-stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .maps-setup-banner{
+      display:none;
+      border:1px solid #d5b06b;
+      background:#fff8e9;
+      color:#6b542f;
+      padding:14px 15px;
+      border-radius:12px;
+      margin:0 0 22px;
+      line-height:1.55;
+      font-size:12px;
+    }
+    .maps-setup-banner.show{display:block}
+    .maps-setup-banner strong{color:#2b2318}
+
+    @media(max-width:640px){
+      .route-preview{grid-template-columns:1fr}
+      .review-route-stats{grid-template-columns:1fr 1fr}
+      .live-map,.map-loading{min-height:260px}
+    }
+
+  
+    /* International phone input */
+    .iti{
+      width:100%;
+      display:block;
+    }
+    .iti input#phone{
+      width:100%;
+      padding-left:104px !important;
+    }
+    .iti__selected-country-primary{
+      border-radius:12px 0 0 12px;
+    }
+    .iti__country-selector{
+      z-index:99999 !important;
+      max-height:330px;
+    }
+    .iti__country-list{
+      max-height:300px;
+    }
+    .phone-valid{
+      color:var(--ok) !important;
+      font-weight:700;
+    }
+    .phone-error{
+      color:var(--danger) !important;
+      font-weight:700;
+    }
+
+  
+    /* ===== Client-requested visual cleanup ===== */
+    .header{
+      background:#050505 !important;
+      border-bottom:1px solid rgba(213,176,107,.28) !important;
+      backdrop-filter:none !important;
+    }
+    .header-inner{min-height:104px;}
+    .brand-logo{
+      width:94px;
+      height:94px;
+      display:block;
+      object-fit:contain;
+    }
+    .header-contact{color:rgba(255,255,255,.72) !important;}
+    .header-contact strong{color:var(--gold-2) !important;}
+
+    /* Hide technical/selection helper copy below primary pickup/drop-off. */
+    #pickupSelected,
+    #dropoffSelected,
+    #pickupSelected + .map-soon,
+    #dropoffSelected + .map-soon{
+      display:none !important;
+    }
+
+    /* Force Google Places widget and predictions into a light/white theme. */
+    .autocomplete-host gmp-place-autocomplete{
+      color-scheme:light !important;
+      background-color:#fff !important;
+      color:#171717 !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(input){
+      background-color:#fff !important;
+      color:#171717 !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(prediction-list){
+      background-color:#fff !important;
+      color:#171717 !important;
+      border:1px solid #ded7cc !important;
+      border-radius:0 0 14px 14px !important;
+      box-shadow:0 16px 38px rgba(0,0,0,.14) !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item){
+      background-color:#fff !important;
+      color:#171717 !important;
+      border-bottom:1px solid #eee8df !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item):hover,
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item-selected){
+      background-color:#f7f2e9 !important;
+      color:#111 !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item-main-text),
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item-match),
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item-nonmatch){
+      color:#171717 !important;
+    }
+    .autocomplete-host gmp-place-autocomplete::part(prediction-item-secondary-text){
+      color:#716b62 !important;
+    }
+
+    @media(max-width:640px){
+      .header-inner{min-height:84px;}
+      .brand-logo{width:76px;height:76px;}
+    }
+
+  
+    /* ===== Round Trip UX ===== */
+    .trip-leg-card{margin:0;}
+    .round-trip-leg-heading{display:none;}
+    .round-trip-mode .trip-leg-card,
+    .round-trip-return-card{
+      border:1px solid #ddd4c5;
+      border-radius:18px;
+      background:#fcfaf6;
+      padding:22px;
+      box-shadow:0 12px 30px rgba(25,18,8,.05);
+    }
+    .round-trip-mode .round-trip-leg-heading,
+    .round-trip-return-card .round-trip-leg-heading{display:block;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid #e3dccf;}
+    .round-trip-leg-heading span{display:block;color:var(--gold);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px;}
+    .round-trip-leg-heading strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:25px;font-weight:500;}
+    .round-trip-leg-heading small{display:block;color:var(--muted);font-size:12px;margin-top:5px;}
+    .round-trip-return-card{margin-top:24px;}
+    #returnPickupSelected,#returnDropoffSelected{display:none !important;}
+    .round-trip-mode > .section-title:nth-of-type(2){display:none;}
+    @media(max-width:640px){
+      .round-trip-mode .trip-leg-card,.round-trip-return-card{padding:17px 14px;border-radius:14px;}
+      .round-trip-leg-heading strong{font-size:22px;}
+    }
+
+  
+    /* ===== FINAL CLIENT CLEANUP ===== */
+    #pickupSelected,
+    #dropoffSelected,
+    #pickupSelected + .map-soon,
+    #dropoffSelected + .map-soon{
+      display:none !important;
+    }
+
+    /* Google Places suggestions: force a clean light/white experience. */
+    .autocomplete-host,
+    .autocomplete-host gmp-place-autocomplete{
+      color-scheme:light !important;
+    }
+    .autocomplete-host gmp-place-autocomplete{
+      background:#fff !important;
+      color:#151515 !important;
+    }
+
+    /* Remove internal/technical side-note space from panel headings. */
+    .panel-head .secure-note{display:none !important;}
+
+    /* Page 2 and Page 3 stay clean after removed notes. */
+    [data-screen="2"] > .quote-note,
+    [data-screen="3"] .contact-card > .quote-note{
+      display:none !important;
+    }
+
+  
+    [data-screen="1"]:not(.round-trip-mode) #outboundTripCard > .round-trip-leg-heading{
+      display:none !important;
+    }
+    [data-screen="1"]:not(.round-trip-mode) #outboundTripCard{
+      border:0 !important;
+      padding:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+
+  
+    #sendRequest:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span>NYC Luxury Chauffeur Service • JFK • LGA • EWR • Corporate & VIP</span>
+      <span>+1 (646) 775-0556 &nbsp; • &nbsp; info@nycluxride.com</span>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="https://www.nycluxride.com/" aria-label="NYC Lux Ride Home">
+        <img class="brand-logo" src="./assets/nyc-lux-ride-logo.png" alt="NYC Lux Ride" />
+      </a>
+      <div class="header-contact">
+        <strong>Need assistance?</strong>
+        Call +1 (646) 775-0556
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Private booking request</div>
+      <h1>Your ride, arranged around you.</h1>
+      <p>Tell us where you’re going, choose your preferred vehicle, and send your request. Our team will review the trip and prepare your personalized quote.</p>
+    </div>
+  </section>
+
+  <main class="page">
+    <div class="stepper-wrap">
+      <div class="stepper" aria-label="Booking progress">
+        <div class="step active" data-step-indicator="1"><div class="step-num">01</div><span>Request Information</span></div>
+        <div class="step" data-step-indicator="2"><div class="step-num">02</div><span>Choose Vehicle</span></div>
+        <div class="step" data-step-indicator="3"><div class="step-num">03</div><span>Review & Confirm</span></div>
+      </div>
+    </div>
+
+    <section class="panel" id="bookingPanel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow" id="panelEyebrow">Step 01</div>
+          <h2 id="panelTitle">Request information</h2>
+          <p id="panelSubtitle">Start with the details of your trip.</p>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="maps-setup-banner" id="mapsSetupBanner">
+          <strong>Google Maps API key required.</strong>
+          Open <code>config.js</code>, paste your restricted browser API key, save, then refresh the page.
+          Enable <strong>Maps JavaScript API</strong>, <strong>Places API (New)</strong> and <strong>Routes API</strong> in the same Google Cloud project.
+        </div>
+        <!-- STEP 1 -->
+        <div class="screen active" data-screen="1">
+          <div class="section-title">Trip Type</div>
+          <div class="trip-types">
+            <button type="button" class="choice active" data-trip="one-way">
+              <strong>One Way</strong>
+              <small>Point-to-point transfer from pickup to destination.</small>
+            </button>
+            <button type="button" class="choice" data-trip="round-trip">
+              <strong>Round Trip</strong>
+              <small>Outbound ride plus a return pickup.</small>
+            </button>
+            <button type="button" class="choice" data-trip="hourly">
+              <strong>Hourly</strong>
+              <small>Your chauffeur stays available for a selected duration.</small>
+            </button>
+          </div>
+
+          <div id="outboundTripCard" class="trip-leg-card">
+            <div class="round-trip-leg-heading">
+              <span>Outbound</span>
+              <strong>Round Trip: Pick-Up</strong>
+              <small>Enter the pickup leg of the round trip.</small>
+            </div>
+
+          <div class="grid three">
+            <div class="field">
+              <label>Pickup Date <span class="req">*</span></label>
+              <input id="pickupDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Pickup Time <span class="req">*</span></label>
+              <input id="pickupTime" type="time" />
+            </div>
+            <div class="field" id="durationField" style="display:none">
+              <label>Hours <span class="req">*</span></label>
+              <select id="duration">
+                <option value="">Select hours</option>
+                <option value="0.5">0.5h</option>
+                <option value="1">1h</option>
+                <option value="1.5">1.5h</option>
+                <option value="2">2h</option>
+                <option value="2.5">2.5h</option>
+                <option value="3">3h</option>
+                <option value="3.5">3.5h</option>
+                <option value="4">4h</option>
+                <option value="4.5">4.5h</option>
+                <option value="5">5h</option>
+                <option value="5.5">5.5h</option>
+                <option value="6">6h</option>
+                <option value="6.5">6.5h</option>
+                <option value="7">7h</option>
+                <option value="7.5">7.5h</option>
+                <option value="8">8h</option>
+                <option value="8.5">8.5h</option>
+                <option value="9">9h</option>
+                <option value="9.5">9.5h</option>
+                <option value="10">10h</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="height:24px"></div>
+          <div class="section-title">Pickup & Destination</div>
+
+          <div class="grid">
+            <div class="field">
+              <label>Pickup Type</label>
+              <select id="pickupType">
+                <option value="address">Address</option>
+                <option value="airport">Airport</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Drop-off Type</label>
+              <select id="dropoffType">
+                <option value="address">Address</option>
+                <option value="airport">Airport</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Pickup Location <span class="req">*</span></label>
+              <div class="autocomplete-host" id="pickupAutocompleteHost"></div>
+              <input id="pickupAddress" type="hidden" />
+              <input id="pickupPlaceId" type="hidden" />
+              <div class="selected-place" id="pickupSelected">No pickup selected yet.</div>
+              <div class="map-soon"><span id="pickupMapStatus">Google Maps setup will appear here after your API key is added.</span></div>
+            </div>
+
+            <div class="field full">
+              <div id="stopsContainer" class="stop-list"></div>
+              <button class="add-stop" id="addStop" type="button">＋ Add an additional stop</button>
+            </div>
+
+            <div class="field full">
+              <label>Drop-off Location <span class="req">*</span></label>
+              <div class="autocomplete-host" id="dropoffAutocompleteHost"></div>
+              <input id="dropoffAddress" type="hidden" />
+              <input id="dropoffPlaceId" type="hidden" />
+              <div class="selected-place" id="dropoffSelected">No drop-off selected yet.</div>
+              <div class="map-soon"><span id="routeMapStatus">Select a USA pickup and drop-off to calculate distance and ETA.</span></div>
+            </div>
+            <div class="field full">
+              <div class="route-preview" id="routePreview">
+                <div><small>Distance</small><strong id="previewDistance">—</strong></div>
+                <div><small>Estimated Drive Time</small><strong id="previewDuration">—</strong></div>
+                <div><small>Google Status</small><strong id="previewStatus">Waiting for locations</strong></div>
+              </div>
+            </div>
+          </div>
+          </div><!-- /outboundTripCard -->
+
+          <div id="roundTripReturnCard" class="round-trip-return-card" style="display:none">
+            <div class="round-trip-leg-heading return-heading">
+              <span>Return</span>
+              <strong>Round Trip: Return</strong>
+              <small>Set the return pickup, destination, and timing separately.</small>
+            </div>
+
+            <div class="grid three">
+              <div class="field">
+                <label>Return Date <span class="req">*</span></label>
+                <input id="returnDate" type="date" />
+              </div>
+              <div class="field">
+                <label>Return Time <span class="req">*</span></label>
+                <input id="returnTime" type="time" />
+              </div>
+              <div class="field">
+                <label>Return Passengers <span class="req">*</span></label>
+                <select id="returnPassengers">
+                  <option value="">Select</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option>
+                  <option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="height:18px"></div>
+            <div class="grid">
+              <div class="field">
+                <label>Return Pickup Type</label>
+                <select id="returnPickupType">
+                  <option value="address">Address</option>
+                  <option value="airport">Airport</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Return Drop-off Type</label>
+                <select id="returnDropoffType">
+                  <option value="address">Address</option>
+                  <option value="airport">Airport</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>Return Pickup Location <span class="req">*</span></label>
+                <div class="autocomplete-host" id="returnPickupAutocompleteHost"></div>
+                <input id="returnPickupAddress" type="hidden" />
+                <input id="returnPickupPlaceId" type="hidden" />
+                <div class="selected-place" id="returnPickupSelected"></div>
+              </div>
+              <div class="field full">
+                <div id="returnStopsContainer" class="stop-list"></div>
+                <button class="add-stop" id="addReturnStop" type="button">＋ Add a return stop</button>
+              </div>
+              <div class="field full">
+                <label>Return Drop-off Location <span class="req">*</span></label>
+                <div class="autocomplete-host" id="returnDropoffAutocompleteHost"></div>
+                <input id="returnDropoffAddress" type="hidden" />
+                <input id="returnDropoffPlaceId" type="hidden" />
+                <div class="selected-place" id="returnDropoffSelected"></div>
+              </div>
+              <div class="field full">
+                <label>Return Flight Number</label>
+                <input id="returnFlightNumber" placeholder="Optional — e.g. AA 102" />
+              </div>
+            </div>
+          </div>
+
+          <div style="height:24px"></div>
+          <div class="section-title">Passengers & Trip Details</div>
+          <div class="grid three">
+            <div class="field">
+              <label>Passengers <span class="req">*</span></label>
+              <select id="passengers">
+                <option value="">Select</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Luggage</label>
+              <select id="luggage">
+                <option value="0">0 bags</option>
+                <option value="1">1 bag</option><option value="2">2 bags</option><option value="3">3 bags</option>
+                <option value="4">4 bags</option><option value="5">5 bags</option><option value="6">6 bags</option>
+                <option value="7+">7+ bags</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Flight Number</label>
+              <input id="flightNumber" placeholder="Optional — e.g. AA 102" />
+            </div>
+            <div class="field full">
+              <label>Trip Notes / Special Instructions</label>
+              <textarea id="notes" placeholder="Flight details, child seats, meet & greet, accessibility needs, building entrance instructions, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="btn btn-secondary" href="https://www.nycluxride.com/" style="display:grid;place-items:center;text-decoration:none">Back to Website</a>
+            <button class="btn btn-primary" id="toVehicles" type="button">Choose Vehicle →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="screen" data-screen="2">
+          <div class="summary-bar" id="tripMiniSummary"></div>
+
+          <div class="section-title">Preferred Vehicle</div>
+          <div class="vehicle-grid" id="vehicleGrid">
+            <article class="vehicle-card" data-vehicle-id="escalade">
+              <div class="vehicle-img"><img src="https://www.nycluxride.com/fleet/cadillac-escalade.webp" alt="Cadillac Escalade" /></div>
+              <div class="vehicle-content">
+                <div class="vehicle-top"><div><h3>Cadillac Escalade</h3><div class="vehicle-sub">Luxury SUV</div></div><div class="badge">Popular</div></div>
+                <div class="specs"><span class="spec">Up to 5 passengers</span><span class="spec">3 large + 3 carry-on</span></div>
+                <button class="select-vehicle" type="button">Select Vehicle</button>
+              </div>
+            </article>
+
+            <article class="vehicle-card" data-vehicle-id="suburban">
+              <div class="vehicle-img"><img src="https://www.nycluxride.com/fleet/chevrolet-suburban.webp" alt="Chevrolet Suburban" /></div>
+              <div class="vehicle-content">
+                <div class="vehicle-top"><div><h3>Chevrolet Suburban</h3><div class="vehicle-sub">Luxury SUV / Similar</div></div></div>
+                <div class="specs"><span class="spec">Up to 5 passengers</span><span class="spec">3 large + 3 carry-on</span></div>
+                <button class="select-vehicle" type="button">Select Vehicle</button>
+              </div>
+            </article>
+
+            <article class="vehicle-card" data-vehicle-id="sclass">
+              <div class="vehicle-img"><img src="https://www.nycluxride.com/fleet/mercedes-s-class.webp" alt="Mercedes-Benz S-Class" /></div>
+              <div class="vehicle-content">
+                <div class="vehicle-top"><div><h3>Mercedes-Benz S-Class</h3><div class="vehicle-sub">Luxury Sedan</div></div><div class="badge">Executive</div></div>
+                <div class="specs"><span class="spec">Up to 3 passengers</span><span class="spec">2 large + 2 carry-on</span></div>
+                <button class="select-vehicle" type="button">Select Vehicle</button>
+              </div>
+            </article>
+
+            <article class="vehicle-card" data-vehicle-id="navigator">
+              <div class="vehicle-img"><img src="https://www.nycluxride.com/fleet/lincoln-navigator.webp" alt="Lincoln Navigator" /></div>
+              <div class="vehicle-content">
+                <div class="vehicle-top"><div><h3>Lincoln Navigator</h3><div class="vehicle-sub">Luxury SUV</div></div></div>
+                <div class="specs"><span class="spec">Up to 5 passengers</span><span class="spec">3 large + 3 carry-on</span></div>
+                <button class="select-vehicle" type="button">Select Vehicle</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" data-back="1" type="button">← Previous Step</button>
+            <button class="btn btn-primary" id="toReview" type="button" disabled>Review Request →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="screen" data-screen="3">
+          <div class="review-layout">
+            <div class="review-card">
+              <h3>Your trip</h3>
+              <div class="route">
+                <div class="route-item">
+                  <div class="route-dot"></div>
+                  <div><small>Pickup</small><strong id="reviewPickup">—</strong></div>
+                </div>
+                <div id="reviewStops"></div>
+                <div class="route-item">
+                  <div class="route-dot end"></div>
+                  <div><small>Drop-off</small><strong id="reviewDropoff">—</strong></div>
+                </div>
+              </div>
+
+              <div class="review-map live-map" id="reviewMap">
+                <div class="map-loading">Google route map will appear here.</div>
+              </div>
+              <div class="review-route-stats" id="reviewRouteStats">
+                <div><small>Distance</small><strong id="reviewDistance">—</strong></div>
+                <div><small>Estimated Drive Time</small><strong id="reviewDuration">—</strong></div>
+              </div>
+
+              <div class="details" id="reviewDetails"></div>
+              <div class="chosen-vehicle" id="chosenVehicle"></div>
+            </div>
+
+            <div class="contact-card">
+              <h3>Booking contact</h3>
+              <div class="grid">
+                <div class="field">
+                  <label>First Name <span class="req">*</span></label>
+                  <input id="firstName" autocomplete="given-name" placeholder="First name" />
+                </div>
+                <div class="field">
+                  <label>Last Name <span class="req">*</span></label>
+                  <input id="lastName" autocomplete="family-name" placeholder="Last name" />
+                </div>
+                <div class="field full">
+                  <label>Email <span class="req">*</span></label>
+                  <input id="email" type="email" autocomplete="email" placeholder="you@example.com" />
+                </div>
+                <div class="field full">
+                  <label>Phone Number <span class="req">*</span></label>
+                  <input id="phone" type="tel" autocomplete="tel" placeholder="Phone number" />
+                  <div class="help" id="phoneHelp">Choose your country, then enter your phone number. We will save it in international format for SMS notifications.</div>
+                </div>
+              </div>
+
+              <label class="consent">
+                <input type="checkbox" id="consent" />
+                <span>I agree to receive transactional booking updates by email and SMS about this request. Message and data rates may apply. Reply STOP to opt out of SMS when messaging is enabled.</span>
+              </label>
+
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" data-back="2" type="button">← Previous Step</button>
+            <button class="btn btn-primary" id="sendRequest" type="button">Send Request</button>
+          </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="screen" data-screen="4">
+          <div class="success">
+            <div class="success-icon">✓</div>
+            <div class="eyebrow">Request received</div>
+            <h2 id="successTitle">Thank you.</h2>
+            <p>Your ride request has been submitted successfully. Please keep the request reference below for your records.</p>
+            <div class="ref-box">
+              <small>Request reference</small>
+              <strong id="requestRef">NYC-DEMO-0000</strong>
+            </div>
+            <div style="margin-top:25px">
+              <button class="btn btn-primary" id="newRequest" type="button">Start Another Request</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Please complete the required fields.</div>
+
+  <footer class="footer">
+    <strong>NYC LUX RIDE</strong>
+    <p>Luxury chauffeur service in New York City • +1 (646) 775-0556 • info@nycluxride.com</p>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.2.3/dist/js/intlTelInputWithUtils.min.js"></script>
+  <script src="./config.js"></script>
+  <script src="./backend-config.js"></script>
+  <script>
+    const vehicleData = {
+      escalade:{
+        name:"Cadillac Escalade", type:"Luxury SUV",
+        img:"https://www.nycluxride.com/fleet/cadillac-escalade.webp",
+        capacity:"Up to 5 passengers", luggage:"3 large + 3 carry-on"
+      },
+      suburban:{
+        name:"Chevrolet Suburban", type:"Luxury SUV / Similar",
+        img:"https://www.nycluxride.com/fleet/chevrolet-suburban.webp",
+        capacity:"Up to 5 passengers", luggage:"3 large + 3 carry-on"
+      },
+      sclass:{
+        name:"Mercedes-Benz S-Class", type:"Luxury Sedan",
+        img:"https://www.nycluxride.com/fleet/mercedes-s-class.webp",
+        capacity:"Up to 3 passengers", luggage:"2 large + 2 carry-on"
+      },
+      navigator:{
+        name:"Lincoln Navigator", type:"Luxury SUV",
+        img:"https://www.nycluxride.com/fleet/lincoln-navigator.webp",
+        capacity:"Up to 5 passengers", luggage:"3 large + 3 carry-on"
+      }
+    };
+
+    const state = {
+      step:1,
+      tripType:"one-way",
+      stops:[],
+      selectedVehicle:null,
+      placeObjects:{pickup:null, dropoff:null, stops:[], returnPickup:null, returnDropoff:null, returnStops:[]},
+      placeData:{pickup:null, dropoff:null, stops:[], returnPickup:null, returnDropoff:null, returnStops:[]},
+      returnStops:[],
+      route:null
+    };
+
+    const mapsRuntime = {
+      ready:false,
+      Place:null,
+      PlaceAutocompleteElement:null,
+      Route:null,
+      Map:null,
+      LatLngBounds:null,
+      reviewMap:null,
+      routePolylines:[]
+    };
+
+    const titles = {
+      1:["Step 01","Request information","Start with the details of your trip."],
+      2:["Step 02","Choose your vehicle","Select the vehicle you would prefer for this ride."],
+      3:["Step 03","Review & send request","Review your trip and tell us who the booking is for."],
+      4:["Complete","Request received",""]
+    };
+
+    const $ = (id)=>document.getElementById(id);
+
+    function showToast(msg){
+      const t=$("toast");
+      t.textContent=msg;
+      t.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer=setTimeout(()=>t.classList.remove("show"),3200);
+    }
+
+    function escapeHtml(str){
+      return String(str??"").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+    }
+
+    function shorten(s,n){ return !s?"—":s.length>n?s.slice(0,n-1)+"…":s; }
+
+    function goToStep(step){
+      state.step=step;
+      document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",Number(s.dataset.screen)===step));
+      document.querySelectorAll("[data-step-indicator]").forEach(el=>{
+        const n=Number(el.dataset.stepIndicator);
+        el.classList.toggle("active",n===step);
+        el.classList.toggle("complete",n<step);
+      });
+      const [eyebrow,title,subtitle]=titles[step];
+      $("panelEyebrow").textContent=eyebrow;
+      $("panelTitle").textContent=title;
+      $("panelSubtitle").textContent=subtitle;
+      document.querySelector(".stepper-wrap").style.display = step===4 ? "none" : "block";
+      if(step===3){
+        setTimeout(()=>renderRouteMap(),120);
+      }
+      window.scrollTo({top:document.querySelector(".hero").offsetHeight-5,behavior:"smooth"});
+      saveDraft();
+    }
+
+    function setMinDates(){
+      const d=new Date();
+      const y=d.getFullYear();
+      const m=String(d.getMonth()+1).padStart(2,"0");
+      const day=String(d.getDate()).padStart(2,"0");
+      const today=`${y}-${m}-${day}`;
+      $("pickupDate").min=today;
+      $("returnDate").min=today;
+    }
+
+    function tripLabel(){
+      return {"one-way":"One Way","round-trip":"Round Trip","hourly":"Hourly"}[state.tripType] || "One Way";
+    }
+
+    function fmtDate(dateStr){
+      if(!dateStr) return "—";
+      const d=new Date(dateStr+"T12:00:00");
+      return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+    }
+
+    function metersToMiles(meters){
+      return (Number(meters||0) / 1609.344);
+    }
+
+    function formatDistance(meters){
+      if(!meters && meters!==0) return "—";
+      return `${metersToMiles(meters).toFixed(1)} miles`;
+    }
+
+    function formatDuration(ms){
+      if(!ms && ms!==0) return "—";
+      const totalMins=Math.max(1,Math.round(ms/60000));
+      const h=Math.floor(totalMins/60);
+      const m=totalMins%60;
+      if(h && m) return `${h} hr ${m} min`;
+      if(h) return `${h} hr`;
+      return `${m} min`;
+    }
+
+    // ---------------- GOOGLE MAPS LOADING ----------------
+    function installGoogleMapsBootstrap(apiKey){
+      // Google's documented Dynamic Library Import bootstrap.
+      ((g)=>{
+        var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;
+        b=b[c]||(b[c]={});
+        var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,
+            u=()=>h||(h=new Promise(async(f,n)=>{
+              await (a=m.createElement("script"));
+              e.set("libraries",[...r]+"");
+              for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
+              e.set("callback",c+".maps."+q);
+              a.src=`https://maps.${c}apis.com/maps/api/js?`+e;
+              d[q]=f;
+              a.onerror=()=>h=n(Error(p+" could not load."));
+              a.nonce=m.querySelector("script[nonce]")?.nonce||"";
+              m.head.append(a);
+            }));
+        d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n));
+      })({key:apiKey,v:"weekly"});
+    }
+
+    async function loadGoogleMaps(){
+      const cfg=window.NYC_LUX_RIDE_CONFIG||{};
+      const key=String(cfg.googleMapsApiKey||"").trim();
+
+      if(!key || key.includes("PASTE_") || key.length<20){
+        $("mapsSetupBanner").classList.add("show");
+        $("pickupMapStatus").textContent="Add your Google Maps API key in config.js first.";
+        $("previewStatus").textContent="API key required";
+        return false;
+      }
+
+      try{
+        if(typeof window.google?.maps?.importLibrary !== "function"){
+          installGoogleMapsBootstrap(key);
+        }
+
+        const [placesLib, routesLib, mapsLib, coreLib] = await Promise.all([
+          google.maps.importLibrary("places"),
+          google.maps.importLibrary("routes"),
+          google.maps.importLibrary("maps"),
+          google.maps.importLibrary("core")
+        ]);
+
+        mapsRuntime.Place=placesLib.Place;
+        mapsRuntime.PlaceAutocompleteElement=placesLib.PlaceAutocompleteElement;
+        mapsRuntime.Route=routesLib.Route;
+        mapsRuntime.Map=mapsLib.Map;
+        mapsRuntime.LatLngBounds=coreLib.LatLngBounds;
+        mapsRuntime.ready=true;
+
+        $("mapsSetupBanner").classList.remove("show");
+        $("pickupMapStatus").textContent="Google Places is active. Search results are restricted to the United States.";
+        $("previewStatus").textContent=`Google Maps ready${google.maps.version ? " · v"+google.maps.version : ""}`;
+
+        createPrimaryAutocompletes();
+        await restoreGooglePlacesFromDraft();
+        return true;
+      }catch(err){
+        console.error("Google Maps initialization error:",err);
+        $("mapsSetupBanner").classList.add("show");
+        $("mapsSetupBanner").innerHTML=`<strong>Google Maps could not initialize.</strong> ${escapeHtml(err.message||String(err))}<br>Confirm the API key is saved in config.js, the key allows this localhost URL, and Maps JavaScript API, Places API (New), and Routes API are enabled.`;
+        $("previewStatus").textContent="Google Maps error";
+        return false;
+      }
+    }
+
+    function makeAutocomplete(host, role, index=null, initialValue=""){
+      if(!mapsRuntime.ready) return null;
+
+      host.innerHTML="";
+      const ac=new mapsRuntime.PlaceAutocompleteElement({
+        includedRegionCodes:["us"],
+        requestedLanguage:"en",
+        requestedRegion:"us"
+      });
+      ac.placeholder =
+        role==="pickup" ? "Search pickup in the USA — airport, hotel, address..." :
+        role==="dropoff" ? "Search drop-off in the USA — hotel, airport, address..." :
+        role==="returnPickup" ? "Search return pickup in the USA..." :
+        role==="returnDropoff" ? "Search return drop-off in the USA..." :
+        role==="returnStop" ? "Search a return stop in the USA..." :
+        "Search an additional stop in the USA...";
+      ac.value=initialValue||"";
+      ac.style.width="100%";
+      host.appendChild(ac);
+
+      ac.addEventListener("gmp-select", async ({placePrediction})=>{
+        try{
+          const place=placePrediction.toPlace();
+          await place.fetchFields({
+            fields:["id","displayName","formattedAddress","location","addressComponents"]
+          });
+
+          const country=(place.addressComponents||[]).find(c=>(c.types||[]).includes("country"));
+          const countryCode=(country?.shortText||"").toUpperCase();
+
+          if(countryCode!=="US"){
+            setPlaceError(role,index,"Please select a location inside the United States.");
+            ac.value="";
+            return;
+          }
+
+          const data={
+            id:place.id||"",
+            name:place.displayName||"",
+            address:place.formattedAddress||place.displayName||"",
+            lat:place.location?.lat?.() ?? place.location?.lat ?? null,
+            lng:place.location?.lng?.() ?? place.location?.lng ?? null,
+            country:"US"
+          };
+
+          setSelectedPlace(role,index,place,data,ac);
+          await maybeComputeRoute();
+        }catch(err){
+          console.error(err);
+          setPlaceError(role,index,"Could not read this location. Please choose another Google suggestion.");
+        }
+      });
+
+      // If user edits after selecting, require a fresh Google selection.
+      ac.addEventListener("input",()=>{
+        const current=getPlaceData(role,index);
+        if(current && ac.value!==current.address){
+          clearSelectedPlace(role,index,false);
+        }
+      });
+
+      return ac;
+    }
+
+    function createPrimaryAutocompletes(){
+      makeAutocomplete($("pickupAutocompleteHost"),"pickup");
+      makeAutocomplete($("dropoffAutocompleteHost"),"dropoff");
+      makeAutocomplete($("returnPickupAutocompleteHost"),"returnPickup");
+      makeAutocomplete($("returnDropoffAutocompleteHost"),"returnDropoff");
+      renderStops();
+      renderReturnStops();
+    }
+
+    function selectedLabelElement(role,index){
+      if(role==="pickup") return $("pickupSelected");
+      if(role==="dropoff") return $("dropoffSelected");
+      if(role==="returnPickup") return $("returnPickupSelected");
+      if(role==="returnDropoff") return $("returnDropoffSelected");
+      if(role==="returnStop") return document.querySelector(`[data-return-stop-selected="${index}"]`);
+      return document.querySelector(`[data-stop-selected="${index}"]`);
+    }
+
+    function getPlaceData(role,index){
+      if(role==="pickup") return state.placeData.pickup;
+      if(role==="dropoff") return state.placeData.dropoff;
+      if(role==="returnPickup") return state.placeData.returnPickup;
+      if(role==="returnDropoff") return state.placeData.returnDropoff;
+      if(role==="returnStop") return state.placeData.returnStops[index]||null;
+      return state.placeData.stops[index]||null;
+    }
+
+    function getPlaceObject(role,index){
+      if(role==="pickup") return state.placeObjects.pickup;
+      if(role==="dropoff") return state.placeObjects.dropoff;
+      if(role==="returnPickup") return state.placeObjects.returnPickup;
+      if(role==="returnDropoff") return state.placeObjects.returnDropoff;
+      if(role==="returnStop") return state.placeObjects.returnStops[index]||null;
+      return state.placeObjects.stops[index]||null;
+    }
+
+    function setSelectedPlace(role,index,place,data,ac){
+      if(role==="pickup"){
+        state.placeObjects.pickup=place;
+        state.placeData.pickup=data;
+        $("pickupAddress").value=data.address;
+        $("pickupPlaceId").value=data.id;
+        $("pickupAutocompleteHost").classList.remove("invalid");
+      }else if(role==="dropoff"){
+        state.placeObjects.dropoff=place;
+        state.placeData.dropoff=data;
+        $("dropoffAddress").value=data.address;
+        $("dropoffPlaceId").value=data.id;
+        $("dropoffAutocompleteHost").classList.remove("invalid");
+      }else if(role==="returnPickup"){
+        state.placeObjects.returnPickup=place;
+        state.placeData.returnPickup=data;
+        $("returnPickupAddress").value=data.address;
+        $("returnPickupPlaceId").value=data.id;
+        $("returnPickupAutocompleteHost").classList.remove("invalid");
+      }else if(role==="returnDropoff"){
+        state.placeObjects.returnDropoff=place;
+        state.placeData.returnDropoff=data;
+        $("returnDropoffAddress").value=data.address;
+        $("returnDropoffPlaceId").value=data.id;
+        $("returnDropoffAutocompleteHost").classList.remove("invalid");
+      }else if(role==="returnStop"){
+        state.placeObjects.returnStops[index]=place;
+        state.placeData.returnStops[index]=data;
+        state.returnStops[index]=data.address;
+      }else{
+        state.placeObjects.stops[index]=place;
+        state.placeData.stops[index]=data;
+        state.stops[index]=data.address;
+      }
+
+      if(ac) ac.value=data.address;
+      const label=selectedLabelElement(role,index);
+      if(label){
+        label.className="selected-place ok";
+        label.textContent=`✓ ${data.address}`;
+      }
+
+      if(state.tripType==="round-trip"){
+        if(role==="pickup" && !state.placeData.returnDropoff){
+          state.placeObjects.returnDropoff=place; state.placeData.returnDropoff={...data};
+          $("returnDropoffAddress").value=data.address; $("returnDropoffPlaceId").value=data.id;
+          const w=$("returnDropoffAutocompleteHost")?.querySelector("gmp-place-autocomplete"); if(w) w.value=data.address;
+        }
+        if(role==="dropoff" && !state.placeData.returnPickup){
+          state.placeObjects.returnPickup=place; state.placeData.returnPickup={...data};
+          $("returnPickupAddress").value=data.address; $("returnPickupPlaceId").value=data.id;
+          const w=$("returnPickupAutocompleteHost")?.querySelector("gmp-place-autocomplete"); if(w) w.value=data.address;
+        }
+      }
+      saveDraft();
+    }
+
+    function setPlaceError(role,index,msg){
+      clearSelectedPlace(role,index,false);
+      const label=selectedLabelElement(role,index);
+      if(label){
+        label.className="selected-place error";
+        label.textContent=msg;
+      }
+      showToast(msg);
+    }
+
+    function clearSelectedPlace(role,index,save=true){
+      if(role==="pickup"){
+        state.placeObjects.pickup=null; state.placeData.pickup=null;
+        $("pickupAddress").value=""; $("pickupPlaceId").value="";
+      }else if(role==="dropoff"){
+        state.placeObjects.dropoff=null; state.placeData.dropoff=null;
+        $("dropoffAddress").value=""; $("dropoffPlaceId").value="";
+      }else if(role==="returnPickup"){
+        state.placeObjects.returnPickup=null; state.placeData.returnPickup=null;
+        $("returnPickupAddress").value=""; $("returnPickupPlaceId").value="";
+      }else if(role==="returnDropoff"){
+        state.placeObjects.returnDropoff=null; state.placeData.returnDropoff=null;
+        $("returnDropoffAddress").value=""; $("returnDropoffPlaceId").value="";
+      }else if(role==="returnStop"){
+        state.placeObjects.returnStops[index]=null; state.placeData.returnStops[index]=null; state.returnStops[index]="";
+      }else{
+        state.placeObjects.stops[index]=null;
+        state.placeData.stops[index]=null;
+        state.stops[index]="";
+      }
+      state.route=null;
+      resetRoutePreview();
+      if(save) saveDraft();
+    }
+
+    // ---------------- ROUTING ----------------
+    async function maybeComputeRoute(){
+      if(!mapsRuntime.ready || !state.placeObjects.pickup || !state.placeObjects.dropoff){
+        resetRoutePreview();
+        return null;
+      }
+      return computeRoute();
+    }
+
+    async function computeRoute(){
+      try{
+        $("previewStatus").textContent="Calculating route…";
+        $("routeMapStatus").textContent="Google is calculating the driving route…";
+
+        const intermediatePlaces=state.placeObjects.stops
+          .filter(Boolean)
+          .map(place=>({location:place}));
+
+        const request={
+          origin:state.placeObjects.pickup,
+          destination:state.placeObjects.dropoff,
+          travelMode:"DRIVING",
+          routingPreference:"TRAFFIC_AWARE",
+          fields:["path","distanceMeters","durationMillis"]
+        };
+        if(intermediatePlaces.length) request.intermediates=intermediatePlaces;
+
+        const result=await mapsRuntime.Route.computeRoutes(request);
+        const route=result?.routes?.[0];
+        if(!route) throw new Error("No driving route was found.");
+
+        state.route={
+          distanceMeters:route.distanceMeters||0,
+          durationMillis:route.durationMillis||0,
+          path:route.path||[],
+          routeObject:route
+        };
+
+        $("previewDistance").textContent=formatDistance(state.route.distanceMeters);
+        $("previewDuration").textContent=formatDuration(state.route.durationMillis);
+        $("previewStatus").textContent="Route ready";
+        $("routeMapStatus").textContent="USA driving route calculated successfully.";
+        $("reviewDistance").textContent=formatDistance(state.route.distanceMeters);
+        $("reviewDuration").textContent=formatDuration(state.route.durationMillis);
+
+        if(state.step===3) renderRouteMap();
+        saveDraft();
+        return state.route;
+      }catch(err){
+        console.error(err);
+        state.route=null;
+        $("previewStatus").textContent="Route unavailable";
+        $("routeMapStatus").textContent=err.message || "Could not calculate the route.";
+        showToast("Google could not calculate this route. Check the selected locations.");
+        return null;
+      }
+    }
+
+    function resetRoutePreview(){
+      $("previewDistance").textContent="—";
+      $("previewDuration").textContent="—";
+      if(mapsRuntime.ready){
+        $("previewStatus").textContent="Waiting for locations";
+        $("routeMapStatus").textContent="Select a USA pickup and drop-off to calculate distance and ETA.";
+      }
+      $("reviewDistance").textContent="—";
+      $("reviewDuration").textContent="—";
+    }
+
+    async function renderRouteMap(){
+      const mapEl=$("reviewMap");
+      if(!mapsRuntime.ready){
+        mapEl.innerHTML='<div class="map-loading">Add your Google Maps API key in config.js to display the route map.</div>';
+        return;
+      }
+
+      if(!state.route && state.placeObjects.pickup && state.placeObjects.dropoff){
+        await computeRoute();
+      }
+      if(!state.route?.path?.length){
+        mapEl.innerHTML='<div class="map-loading">Select valid USA pickup and drop-off locations first.</div>';
+        return;
+      }
+
+      mapEl.innerHTML="";
+      mapsRuntime.reviewMap=new mapsRuntime.Map(mapEl,{
+        center:state.route.path[0],
+        zoom:11,
+        mapTypeControl:false,
+        streetViewControl:false,
+        fullscreenControl:true,
+        clickableIcons:false
+      });
+
+      mapsRuntime.routePolylines.forEach(p=>p.setMap(null));
+      mapsRuntime.routePolylines=state.route.routeObject.createPolylines();
+      mapsRuntime.routePolylines.forEach(polyline=>polyline.setMap(mapsRuntime.reviewMap));
+
+      const bounds=new mapsRuntime.LatLngBounds();
+      state.route.path.forEach(point=>bounds.extend(point));
+      mapsRuntime.reviewMap.fitBounds(bounds,42);
+    }
+
+    // ---------------- STOPS ----------------
+    $("addStop").addEventListener("click",()=>{
+      state.stops.push("");
+      state.placeObjects.stops.push(null);
+      state.placeData.stops.push(null);
+      renderStops();
+      saveDraft();
+    });
+
+    function renderStops(){
+      const c=$("stopsContainer");
+      c.innerHTML="";
+      state.stops.forEach((value,i)=>{
+        const row=document.createElement("div");
+        row.className="stop-row";
+        row.innerHTML=`
+          <div>
+            <div class="autocomplete-host" data-stop-host="${i}"></div>
+            <div class="selected-place" data-stop-selected="${i}">${value ? "Saved stop: "+escapeHtml(value) : "No stop selected yet."}</div>
+          </div>
+          <button class="icon-btn" type="button" data-remove-stop="${i}" aria-label="Remove stop">×</button>`;
+        c.appendChild(row);
+
+        if(mapsRuntime.ready){
+          const data=state.placeData.stops[i];
+          makeAutocomplete(
+            row.querySelector(`[data-stop-host="${i}"]`),
+            "stop",
+            i,
+            data?.address||value||""
+          );
+          if(data){
+            const label=row.querySelector(`[data-stop-selected="${i}"]`);
+            label.className="selected-place ok";
+            label.textContent=`✓ ${data.address}`;
+          }
+        }
+      });
+
+      c.querySelectorAll("[data-remove-stop]").forEach(btn=>btn.addEventListener("click",async e=>{
+        const i=Number(e.currentTarget.dataset.removeStop);
+        state.stops.splice(i,1);
+        state.placeObjects.stops.splice(i,1);
+        state.placeData.stops.splice(i,1);
+        renderStops();
+        await maybeComputeRoute();
+        saveDraft();
+      }));
+    }
+
+    $("addReturnStop").addEventListener("click",()=>{
+      state.returnStops.push("");
+      state.placeObjects.returnStops.push(null);
+      state.placeData.returnStops.push(null);
+      renderReturnStops();
+      saveDraft();
+    });
+
+    function renderReturnStops(){
+      const c=$("returnStopsContainer");
+      if(!c) return;
+      c.innerHTML="";
+      state.returnStops.forEach((value,i)=>{
+        const row=document.createElement("div");
+        row.className="stop-row";
+        row.innerHTML=`
+          <div>
+            <div class="autocomplete-host" data-return-stop-host="${i}"></div>
+            <div class="selected-place" data-return-stop-selected="${i}"></div>
+          </div>
+          <button class="icon-btn" type="button" data-remove-return-stop="${i}" aria-label="Remove return stop">×</button>`;
+        c.appendChild(row);
+
+        if(mapsRuntime.ready){
+          const data=state.placeData.returnStops[i];
+          makeAutocomplete(
+            row.querySelector(`[data-return-stop-host="${i}"]`),
+            "returnStop",
+            i,
+            data?.address||value||""
+          );
+        }
+      });
+
+      c.querySelectorAll("[data-remove-return-stop]").forEach(btn=>{
+        btn.addEventListener("click",e=>{
+          const i=Number(e.currentTarget.dataset.removeReturnStop);
+          state.returnStops.splice(i,1);
+          state.placeObjects.returnStops.splice(i,1);
+          state.placeData.returnStops.splice(i,1);
+          renderReturnStops();
+          saveDraft();
+        });
+      });
+    }
+
+    // ---------------- TRIP UI ----------------
+    $("passengers").addEventListener("change",()=>{
+      if(state.tripType==="round-trip" && !$("returnPassengers").dataset.userChanged){
+        $("returnPassengers").value=$("passengers").value;
+      }
+    });
+    $("returnPassengers").addEventListener("change",()=>$("returnPassengers").dataset.userChanged="1");
+
+    document.querySelectorAll("[data-trip]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        state.tripType=btn.dataset.trip;
+        document.querySelectorAll("[data-trip]").forEach(b=>b.classList.toggle("active",b===btn));
+        $("durationField").style.display=state.tripType==="hourly"?"block":"none";
+        $("roundTripReturnCard").style.display=state.tripType==="round-trip"?"block":"none";
+        document.querySelector('[data-screen="1"]').classList.toggle("round-trip-mode",state.tripType==="round-trip");
+        if(state.tripType==="round-trip" && !$("returnPassengers").value && $("passengers").value) $("returnPassengers").value=$("passengers").value;
+        saveDraft();
+      });
+    });
+
+    function markRequired(ids){
+      let ok=true;
+      ids.forEach(id=>{
+        const el=$(id);
+        const valid=String(el.value||"").trim().length>0;
+        el.classList.toggle("invalid",!valid);
+        if(!valid) ok=false;
+      });
+      return ok;
+    }
+
+    function validateStep1(){
+      let ids=["pickupDate","pickupTime","passengers"];
+      if(state.tripType==="hourly") ids.push("duration");
+      if(state.tripType==="round-trip") ids.push("returnDate","returnTime","returnPassengers");
+      let ok=markRequired(ids);
+
+      if(!state.placeData.pickup){
+        $("pickupAutocompleteHost").classList.add("invalid");
+        ok=false;
+      }
+      if(!state.placeData.dropoff){
+        $("dropoffAutocompleteHost").classList.add("invalid");
+        ok=false;
+      }
+      if(state.tripType==="round-trip" && !state.placeData.returnPickup){
+        $("returnPickupAutocompleteHost").classList.add("invalid"); ok=false;
+      }
+      if(state.tripType==="round-trip" && !state.placeData.returnDropoff){
+        $("returnDropoffAutocompleteHost").classList.add("invalid"); ok=false;
+      }
+      if(!mapsRuntime.ready){
+        showToast("Add and enable your Google Maps API key before continuing.");
+        return false;
+      }
+      if(!ok){
+        showToast("Complete the required trip fields and select pickup/drop-off from Google suggestions.");
+        return false;
+      }
+      return true;
+    }
+
+    function updateMiniSummary(){
+      $("tripMiniSummary").innerHTML=`
+        <div><small>Trip</small><strong>${tripLabel()}</strong></div>
+        <div><small>Pickup</small><strong>${fmtDate($("pickupDate").value)} · ${$("pickupTime").value || "—"}</strong></div>
+        <div><small>Passengers</small><strong>${$("passengers").value || "—"}</strong></div>
+        <div><small>Route</small><strong>${escapeHtml(shorten($("pickupAddress").value,28))} → ${escapeHtml(shorten($("dropoffAddress").value,28))}</strong></div>`;
+    }
+
+    $("toVehicles").addEventListener("click",async()=>{
+      if(!validateStep1()) return;
+      if(!state.route){
+        const route=await computeRoute();
+        if(!route){
+          showToast("Please choose locations that Google can route between.");
+          return;
+        }
+      }
+      updateMiniSummary();
+      goToStep(2);
+    });
+
+    document.querySelectorAll(".vehicle-card").forEach(card=>{
+      const pick=()=>{
+        state.selectedVehicle=card.dataset.vehicleId;
+        document.querySelectorAll(".vehicle-card").forEach(c=>{
+          c.classList.toggle("selected",c===card);
+          c.querySelector(".select-vehicle").textContent=c===card?"Selected ✓":"Select Vehicle";
+        });
+        $("toReview").disabled=false;
+        saveDraft();
+      };
+      card.addEventListener("click",pick);
+    });
+
+    $("toReview").addEventListener("click",()=>{
+      if(!state.selectedVehicle){showToast("Please choose a vehicle.");return}
+      renderReview();
+      goToStep(3);
+    });
+
+    document.querySelectorAll("[data-back]").forEach(btn=>btn.addEventListener("click",()=>goToStep(Number(btn.dataset.back))));
+
+    function renderReview(){
+      $("reviewPickup").textContent=$("pickupAddress").value;
+      $("reviewDropoff").textContent=$("dropoffAddress").value;
+      const stopWrap=$("reviewStops");
+      stopWrap.innerHTML="";
+      state.placeData.stops.filter(Boolean).forEach((s,i)=>{
+        const el=document.createElement("div");
+        el.className="route-item";
+        el.innerHTML=`<div class="route-dot"></div><div><small>Stop ${i+1}</small><strong>${escapeHtml(s.address)}</strong></div>`;
+        stopWrap.appendChild(el);
+      });
+
+      const more = state.tripType==="hourly"
+        ? `<div class="detail"><small>Duration</small><strong>${escapeHtml($("duration").value||"—")}</strong></div>`
+        : state.tripType==="round-trip"
+          ? `<div class="detail"><small>Return</small><strong>${fmtDate($("returnDate").value)} · ${escapeHtml($("returnTime").value||"—")}</strong></div>`
+          : "";
+
+      $("reviewDetails").innerHTML=`
+        <div class="detail"><small>Trip Type</small><strong>${tripLabel()}</strong></div>
+        <div class="detail"><small>Pickup</small><strong>${fmtDate($("pickupDate").value)} · ${escapeHtml($("pickupTime").value)}</strong></div>
+        <div class="detail"><small>Passengers</small><strong>${escapeHtml($("passengers").value)}</strong></div>
+        <div class="detail"><small>Luggage</small><strong>${escapeHtml($("luggage").value)} bag(s)</strong></div>
+        <div class="detail"><small>Flight</small><strong>${escapeHtml($("flightNumber").value||"Not provided")}</strong></div>
+        ${more}`;
+
+      const v=vehicleData[state.selectedVehicle];
+      $("chosenVehicle").innerHTML=`
+        <img src="${v.img}" alt="${escapeHtml(v.name)}">
+        <div><small>Preferred Vehicle</small><strong>${escapeHtml(v.name)}</strong><div class="vehicle-sub">${escapeHtml(v.type)} · ${escapeHtml(v.capacity)}</div></div>`;
+
+      if(state.route){
+        $("reviewDistance").textContent=formatDistance(state.route.distanceMeters);
+        $("reviewDuration").textContent=formatDuration(state.route.durationMillis);
+      }
+    }
+
+    // ---------------- CONTACT / SUCCESS ----------------
+    const phoneInput = $("phone");
+    const phoneHelp = $("phoneHelp");
+    const phoneIti = window.intlTelInput(phoneInput, {
+      initialCountry: "us",
+      separateDialCode: true,
+      nationalMode: true,
+      strictMode: true,
+      countrySearch: true,
+      formatAsYouType: true,
+      placeholderNumberType: "MOBILE"
+    });
+
+    function updatePhoneHelp(){
+      const country = phoneIti.getSelectedCountry();
+      if(!phoneInput.value.trim()){
+        phoneHelp.className="help";
+        phoneHelp.textContent="Choose your country, then enter your phone number. We will save it in international format for SMS notifications.";
+        return;
+      }
+      if(phoneIti.isValidNumber()){
+        phoneHelp.className="help phone-valid";
+        phoneHelp.textContent=`✓ Valid ${country?.name || "international"} number`;
+      }else{
+        phoneHelp.className="help phone-error";
+        phoneHelp.textContent="Please enter a valid phone number for the selected country.";
+      }
+    }
+
+    phoneInput.addEventListener("input",()=>{
+      phoneInput.classList.remove("invalid");
+      updatePhoneHelp();
+      saveDraft();
+    });
+    phoneInput.addEventListener("countrychange",()=>{
+      phoneInput.classList.remove("invalid");
+      updatePhoneHelp();
+      saveDraft();
+    });
+
+    function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+
+    function validateContact(){
+      let ok=markRequired(["firstName","lastName","email","phone"]);
+      if(!validEmail($("email").value)){
+        $("email").classList.add("invalid"); ok=false;
+      }
+
+      if(!$("phone").value.trim() || !phoneIti.isValidNumber()){
+        $("phone").classList.add("invalid");
+        phoneHelp.className="help phone-error";
+        phoneHelp.textContent="Please enter a valid phone number for the selected country.";
+        ok=false;
+      }
+
+      if(!$("consent").checked){
+        showToast("Please accept the booking update consent.");
+        return false;
+      }
+      if(!ok) showToast("Please complete the booking contact details.");
+      return ok;
+    }
+
+    function toBackendPlace(placeData, fallbackAddress, typeValue){
+      const p=placeData||{};
+      return {
+        type:typeValue||null,
+        address:p.address || fallbackAddress || "",
+        place_id:p.id || null,
+        lat:p.lat ?? null,
+        lng:p.lng ?? null
+      };
+    }
+
+    function toBackendStop(stop){
+      if(!stop) return null;
+      return {
+        address:stop.address || "",
+        place_id:stop.id || null,
+        lat:stop.lat ?? null,
+        lng:stop.lng ?? null
+      };
+    }
+
+    function buildBackendPayload(){
+      const d=collectData();
+      return {
+        trip_type:d.tripType,
+        hourly_hours:d.tripType==="hourly" ? Number(d.duration||0) : null,
+        pickup_date:d.pickupDate,
+        pickup_time:d.pickupTime,
+        pickup:toBackendPlace(d.pickupPlace,d.pickupAddress,d.pickupType),
+        dropoff:toBackendPlace(d.dropoffPlace,d.dropoffAddress,d.dropoffType),
+        distance_miles:d.route?.distanceMiles ?? null,
+        estimated_duration_minutes:d.route?.durationMinutes ?? null,
+        passengers:Number(d.passengers||0),
+        luggage:d.luggage==="" ? null : Number(d.luggage),
+        flight_number:d.flightNumber || null,
+        trip_notes:d.notes || null,
+        preferred_vehicle_code:d.vehicleId || null,
+        stops:(d.stops||[]).map(toBackendStop).filter(s=>s && s.address),
+        return_trip:d.tripType==="round-trip" ? {
+          date:d.returnDate,
+          time:d.returnTime,
+          pickup:toBackendPlace(
+            d.returnTrip?.pickupPlace,
+            d.returnTrip?.pickupAddress,
+            d.returnTrip?.pickupType
+          ),
+          dropoff:toBackendPlace(
+            d.returnTrip?.dropoffPlace,
+            d.returnTrip?.dropoffAddress,
+            d.returnTrip?.dropoffType
+          ),
+          passengers:d.returnTrip?.passengers ? Number(d.returnTrip.passengers) : null,
+          flight_number:d.returnTrip?.flightNumber || null,
+          stops:(d.returnTrip?.stops||[]).map(toBackendStop).filter(s=>s && s.address)
+        } : null,
+        customer:{
+          first_name:d.contact.firstName,
+          last_name:d.contact.lastName,
+          email:d.contact.email,
+          phone_e164:d.contact.phone,
+          phone_country:d.contact.phoneCountry || null,
+          phone_dial_code:d.contact.phoneDialCode || null,
+          consent_transactional:Boolean(d.contact.consent)
+        }
+      };
+    }
+
+    function getBackendConfig(){
+      const cfg=window.NYC_LUX_RIDE_BACKEND_CONFIG||{};
+      return {
+        supabaseUrl:String(cfg.supabaseUrl||"").replace(/\/+$/,""),
+        publishableKey:String(cfg.supabasePublishableKey||"").trim(),
+        functionName:String(cfg.submitBookingFunctionName||"submit-booking").trim()
+      };
+    }
+
+    async function submitBookingToBackend(){
+      const cfg=getBackendConfig();
+      if(
+        !cfg.supabaseUrl ||
+        cfg.supabaseUrl.includes("PASTE_") ||
+        !cfg.publishableKey ||
+        cfg.publishableKey.includes("PASTE_")
+      ){
+        throw new Error("Backend is not configured yet. Add the Supabase Project URL and Publishable Key in backend-config.js.");
+      }
+
+      const payload=buildBackendPayload();
+      const endpoint=`${cfg.supabaseUrl}/functions/v1/${encodeURIComponent(cfg.functionName)}`;
+
+      const response=await fetch(endpoint,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "apikey":cfg.publishableKey
+        },
+        body:JSON.stringify(payload)
+      });
+
+      let result=null;
+      try{ result=await response.json(); }catch(_){}
+
+      if(!response.ok || !result?.ok){
+        throw new Error(result?.error || `Unable to submit booking (${response.status}).`);
+      }
+
+      return {result,payload};
+    }
+
+    $("sendRequest").addEventListener("click",async()=>{
+      if(!validateContact()) return;
+
+      const btn=$("sendRequest");
+      const originalText=btn.textContent;
+      btn.disabled=true;
+      btn.textContent="Sending Request...";
+
+      try{
+        const {result,payload}=await submitBookingToBackend();
+        const ref=result.booking?.request_code || "NYC-REQUEST";
+
+        localStorage.setItem("nycLuxRideLastRequest",JSON.stringify({
+          ...payload,
+          booking:result.booking
+        }));
+
+        localStorage.removeItem("nycLuxRideDraftV2");
+        $("requestRef").textContent=ref;
+        $("successTitle").textContent=`Thank you, ${$("firstName").value.trim()}.`;
+        goToStep(4);
+      }catch(error){
+        console.error("Booking submission failed:",error);
+        showToast(error?.message || "Unable to submit your request. Please try again.");
+      }finally{
+        btn.disabled=false;
+        btn.textContent=originalText;
+      }
+    });
+
+    $("newRequest").addEventListener("click",()=>{
+      localStorage.removeItem("nycLuxRideDraftV2");
+      location.reload();
+    });
+
+    function collectData(){
+      return {
+        tripType:state.tripType,
+        pickupDate:$("pickupDate").value,
+        pickupTime:$("pickupTime").value,
+        duration:$("duration").value,
+        pickupType:$("pickupType").value,
+        pickupAddress:$("pickupAddress").value,
+        pickupPlace:state.placeData.pickup,
+        stops:state.placeData.stops.filter(Boolean),
+        dropoffType:$("dropoffType").value,
+        dropoffAddress:$("dropoffAddress").value,
+        dropoffPlace:state.placeData.dropoff,
+        passengers:$("passengers").value,
+        luggage:$("luggage").value,
+        flightNumber:$("flightNumber").value,
+        returnDate:$("returnDate").value,
+        returnTime:$("returnTime").value,
+        returnTrip: state.tripType==="round-trip" ? {
+          pickupType:$("returnPickupType").value,
+          pickupAddress:$("returnPickupAddress").value,
+          pickupPlace:state.placeData.returnPickup,
+          stops:state.placeData.returnStops.filter(Boolean),
+          dropoffType:$("returnDropoffType").value,
+          dropoffAddress:$("returnDropoffAddress").value,
+          dropoffPlace:state.placeData.returnDropoff,
+          passengers:$("returnPassengers").value,
+          flightNumber:$("returnFlightNumber").value
+        } : null,
+        notes:$("notes").value,
+        route:state.route ? {
+          distanceMeters:state.route.distanceMeters,
+          distanceMiles:Number(metersToMiles(state.route.distanceMeters).toFixed(2)),
+          durationMillis:state.route.durationMillis,
+          durationMinutes:Math.round(state.route.durationMillis/60000)
+        } : null,
+        vehicleId:state.selectedVehicle,
+        vehicle:state.selectedVehicle?vehicleData[state.selectedVehicle]:null,
+        contact:{
+          firstName:$("firstName").value,
+          lastName:$("lastName").value,
+          email:$("email").value,
+          phone:phoneIti.getNumber(),
+          phoneDisplay:$("phone").value,
+          phoneCountry:phoneIti.getSelectedCountry()?.iso2 || "",
+          phoneDialCode:phoneIti.getSelectedCountry()?.dialCode || "",
+          consent:$("consent").checked
+        }
+      };
+    }
+
+    // ---------------- DRAFT ----------------
+    function saveDraft(){
+      const ids=["pickupDate","pickupTime","duration","pickupType","dropoffType","passengers","luggage","flightNumber","returnDate","returnTime","returnPassengers","returnPickupType","returnDropoffType","returnFlightNumber","notes","firstName","lastName","email","phone"];
+      const values={};
+      ids.forEach(id=>values[id]=$(id).value);
+      localStorage.setItem("nycLuxRideDraftV2",JSON.stringify({
+        tripType:state.tripType,
+        selectedVehicle:state.selectedVehicle,
+        values,
+        phoneE164: phoneInput.value.trim() && phoneIti.isValidNumber() ? phoneIti.getNumber() : "",
+        pickupPlace:state.placeData.pickup,
+        dropoffPlace:state.placeData.dropoff,
+        stopPlaces:state.placeData.stops,
+        returnPickupPlace:state.placeData.returnPickup,
+        returnDropoffPlace:state.placeData.returnDropoff,
+        returnStopPlaces:state.placeData.returnStops
+      }));
+    }
+
+    function restoreBasicDraft(){
+      try{
+        const d=JSON.parse(localStorage.getItem("nycLuxRideDraftV2")||"null");
+        if(!d) return;
+        state.tripType=d.tripType||"one-way";
+        state.selectedVehicle=d.selectedVehicle||null;
+        Object.entries(d.values||{}).forEach(([id,val])=>{if($(id)) $(id).value=val});
+        state.placeData.pickup=d.pickupPlace||null;
+        state.placeData.dropoff=d.dropoffPlace||null;
+        state.placeData.stops=Array.isArray(d.stopPlaces)?d.stopPlaces:[];
+        state.stops=state.placeData.stops.map(p=>p?.address||"");
+        state.placeObjects.stops=new Array(state.stops.length).fill(null);
+        state.placeData.returnPickup=d.returnPickupPlace||null;
+        state.placeData.returnDropoff=d.returnDropoffPlace||null;
+        state.placeData.returnStops=Array.isArray(d.returnStopPlaces)?d.returnStopPlaces:[];
+        state.returnStops=state.placeData.returnStops.map(p=>p?.address||"");
+        state.placeObjects.returnStops=new Array(state.returnStops.length).fill(null);
+
+        document.querySelectorAll("[data-trip]").forEach(b=>b.classList.toggle("active",b.dataset.trip===state.tripType));
+        $("durationField").style.display=state.tripType==="hourly"?"block":"none";
+        $("roundTripReturnCard").style.display=state.tripType==="round-trip"?"block":"none";
+        document.querySelector('[data-screen="1"]').classList.toggle("round-trip-mode",state.tripType==="round-trip");
+
+        if(state.selectedVehicle){
+          document.querySelectorAll(".vehicle-card").forEach(c=>{
+            const chosen=c.dataset.vehicleId===state.selectedVehicle;
+            c.classList.toggle("selected",chosen);
+            c.querySelector(".select-vehicle").textContent=chosen?"Selected ✓":"Select Vehicle";
+          });
+          $("toReview").disabled=false;
+        }
+      }catch(e){console.warn(e)}
+    }
+
+    async function restoreGooglePlacesFromDraft(){
+      try{
+        const {Place}=await google.maps.importLibrary("places");
+        const restoreOne=async(data,role,index=null)=>{
+          if(!data?.id) return;
+          const place=new Place({id:data.id});
+          await place.fetchFields({fields:["id","displayName","formattedAddress","location","addressComponents"]});
+          const restored={
+            id:place.id||data.id,
+            name:place.displayName||data.name||"",
+            address:place.formattedAddress||data.address||"",
+            lat:place.location?.lat?.() ?? data.lat ?? null,
+            lng:place.location?.lng?.() ?? data.lng ?? null,
+            country:"US"
+          };
+          setSelectedPlace(role,index,place,restored,null);
+          const host = role==="pickup" ? $("pickupAutocompleteHost") :
+                       role==="dropoff" ? $("dropoffAutocompleteHost") :
+                       role==="returnPickup" ? $("returnPickupAutocompleteHost") :
+                       role==="returnDropoff" ? $("returnDropoffAutocompleteHost") :
+                       role==="returnStop" ? document.querySelector(`[data-return-stop-host="${index}"]`) :
+                       document.querySelector(`[data-stop-host="${index}"]`);
+          const widget=host?.querySelector("gmp-place-autocomplete");
+          if(widget) widget.value=restored.address;
+        };
+
+        if(state.placeData.pickup) await restoreOne(state.placeData.pickup,"pickup");
+        if(state.placeData.dropoff) await restoreOne(state.placeData.dropoff,"dropoff");
+        if(state.placeData.returnPickup) await restoreOne(state.placeData.returnPickup,"returnPickup");
+        if(state.placeData.returnDropoff) await restoreOne(state.placeData.returnDropoff,"returnDropoff");
+        for(let i=0;i<state.placeData.stops.length;i++){
+          if(state.placeData.stops[i]) await restoreOne(state.placeData.stops[i],"stop",i);
+        }
+        for(let i=0;i<state.placeData.returnStops.length;i++){
+          if(state.placeData.returnStops[i]) await restoreOne(state.placeData.returnStops[i],"returnStop",i);
+        }
+        if(state.placeObjects.pickup && state.placeObjects.dropoff) await computeRoute();
+      }catch(err){
+        console.warn("Could not restore Google Places draft:",err);
+      }
+    }
+
+    document.querySelectorAll("input,select,textarea").forEach(el=>{
+      el.addEventListener("input",()=>{
+        el.classList.remove("invalid");
+        saveDraft();
+      });
+      el.addEventListener("change",saveDraft);
+    });
+
+    setMinDates();
+    restoreBasicDraft();
+    try{
+      const savedPhoneDraft=JSON.parse(localStorage.getItem("nycLuxRideDraftV2")||"null");
+      if(savedPhoneDraft?.phoneE164){
+        phoneIti.setNumber(savedPhoneDraft.phoneE164);
+        updatePhoneHelp();
+      }
+    }catch(e){}
+    renderStops();
+    loadGoogleMaps();
+  </script>
+
+</body>
+</html>
