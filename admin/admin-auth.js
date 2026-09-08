@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const config = window.NYC_LUX_RIDE_BACKEND_CONFIG;
   const supabaseLibrary = window.supabase;
   const page = document.body.dataset.page;
@@ -1063,6 +1063,15 @@
       bookingDetail.status = result.data.status;
       setDetailStatus(bookingDetail.status);
       renderBookingActions(bookingDetail.status);
+
+      if (bookingDetail.status === "reviewing") {
+        try {
+          await loadQuotePricingRules();
+        } catch (quoteError) {
+          console.error("Quote pricing rules failed to load:", quoteError);
+          showQuoteBuilderError(quoteError);
+        }
+      }
       setActionAlert("Booking status updated successfully.", "success");
     } catch (error) {
       console.error("Booking status update error:", error);
