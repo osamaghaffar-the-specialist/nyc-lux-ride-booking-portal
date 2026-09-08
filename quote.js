@@ -33,7 +33,7 @@
     elements.message.hidden = false;
   }
 
-  function display(value, fallback = "â€”") {
+  function display(value, fallback = "—") {
     return value === null || value === undefined || String(value).trim() === "" ? fallback : String(value);
   }
 
@@ -46,7 +46,7 @@
   }
 
   function formatDate(value, includeTime = false) {
-    if (!value) return "â€”";
+    if (!value) return "—";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return display(value);
     return new Intl.DateTimeFormat(undefined, includeTime
@@ -55,13 +55,13 @@
   }
 
   function formatTripDate(value) {
-    if (!value) return "â€”";
+    if (!value) return "—";
     const date = new Date(`${value}T12:00:00`);
     return Number.isNaN(date.getTime()) ? display(value) : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
   }
 
   function formatTripTime(value) {
-    if (!value) return "â€”";
+    if (!value) return "—";
     const date = new Date(`1970-01-01T${value}`);
     return Number.isNaN(date.getTime()) ? display(value) : new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(date);
   }
@@ -71,7 +71,7 @@
   }
 
   function friendlyVehicle(value) {
-    if (!value) return "â€”";
+    if (!value) return "—";
     return String(value)
       .replace(/[_-]+/g, " ")
       .replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -98,7 +98,7 @@
       trip.return_dropoff_location && `Drop-off: ${trip.return_dropoff_location}`
     ].filter(Boolean);
     if (!parts.length) return;
-    returnRoute.textContent = parts.join(" Â· ");
+    returnRoute.textContent = parts.join(" · ");
     returnRoute.hidden = false;
   }
 
@@ -134,7 +134,7 @@
       if (item.quantity !== null && item.quantity !== undefined && item.rate !== null && item.rate !== undefined) {
         const detail = document.createElement("span");
         detail.className = "line-item-detail";
-        detail.textContent = `${item.quantity} Ã— ${formatCurrency(item.rate, currency)}`;
+        detail.textContent = `${item.quantity} × ${formatCurrency(item.rate, currency)}`;
         info.appendChild(detail);
       }
       const photoKey = String(item.label || "").toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_|_$/g, "");
@@ -314,7 +314,7 @@
 
   function formatDuration(minutes) {
     const value = Number(minutes);
-    if (!Number.isFinite(value)) return "â€”";
+    if (!Number.isFinite(value)) return "—";
     const hours = Math.floor(value / 60);
     const remaining = value % 60;
     if (hours && remaining) return `${hours} hr ${remaining} min`;
@@ -325,7 +325,7 @@
   async function renderQuoteMap(trip) {
     const mapElement = document.getElementById("quote-map");
     const statsElement = document.getElementById("stored-route-stats");
-    statsElement.innerHTML = `<span>Distance <strong>${Number.isFinite(Number(trip.distance_miles)) ? `${Number(trip.distance_miles).toFixed(1)} miles` : "â€”"}</strong></span><span>Estimated Drive Time <strong>${formatDuration(trip.estimated_duration_minutes)}</strong></span>`;
+    statsElement.innerHTML = `<span>Distance <strong>${Number.isFinite(Number(trip.distance_miles)) ? `${Number(trip.distance_miles).toFixed(1)} miles` : "—"}</strong></span><span>Estimated Drive Time <strong>${formatDuration(trip.estimated_duration_minutes)}</strong></span>`;
     const apiKey = String(window.NYC_LUX_RIDE_CONFIG?.googleMapsApiKey || "").trim();
     const pickup = Number.isFinite(Number(trip.pickup_lat)) && Number.isFinite(Number(trip.pickup_lng))
       ? { lat: Number(trip.pickup_lat), lng: Number(trip.pickup_lng) } : null;

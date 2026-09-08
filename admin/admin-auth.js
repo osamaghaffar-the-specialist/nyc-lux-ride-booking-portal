@@ -102,7 +102,7 @@
 
   function displayValue(value) {
     if (value === null || value === undefined || String(value).trim() === "") {
-      return "â€”";
+      return "—";
     }
     return String(value);
   }
@@ -114,7 +114,7 @@
   }
 
   function formatDate(value) {
-    if (!value) return "â€”";
+    if (!value) return "—";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return displayValue(value);
     return new Intl.DateTimeFormat(undefined, {
@@ -273,7 +273,7 @@
   function setDetailValue(id, value) {
     const element = document.getElementById(id);
     const hasValue = value !== null && value !== undefined && String(value).trim() !== "";
-    element.textContent = hasValue ? String(value) : "â€”";
+    element.textContent = hasValue ? String(value) : "—";
     element.classList.toggle("is-empty", !hasValue);
   }
 
@@ -545,7 +545,7 @@
       const calculationNote = item.component.card.querySelector(".quote-charge-calc");
       if (calculationNote) {
         if (item.calculationType === "per_unit") {
-          calculationNote.textContent = `${item.quantity} Ã— ${currency(item.rate)} = ${currency(item.amount)}`;
+          calculationNote.textContent = `${item.quantity} × ${currency(item.rate)} = ${currency(item.amount)}`;
         } else if (item.calculationType === "percentage") {
           calculationNote.textContent = `${item.percentage}% = ${currency(item.amount)}`;
         } else {
@@ -1207,7 +1207,7 @@
   }
 
   function pricingDisplayValue(value) {
-    return value === null || value === undefined || String(value).trim() === "" ? "â€”" : String(value);
+    return value === null || value === undefined || String(value).trim() === "" ? "—" : String(value);
   }
 
   function createToggle(label, field, value) {
