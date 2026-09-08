@@ -1382,7 +1382,7 @@
 
               <label class="consent">
                 <input type="checkbox" id="consent" />
-                <span>I agree to receive transactional booking updates by email and SMS about this request. Message and data rates may apply. Reply STOP to opt out of SMS when messaging is enabled.</span>
+                <span>Optional: Send me booking and quote updates by SMS. Message and data rates may apply. Reply STOP to opt out.</span>
               </label>
 
             </div>
@@ -1814,6 +1814,36 @@
     }
 
     // ---------------- ROUTING ----------------
+    function routePointCoordinate(point, axis){
+      if(!point) return null;
+      const value=typeof point[axis]==="function" ? point[axis]() : point[axis];
+      return Number.isFinite(Number(value)) ? Number(value) : null;
+    }
+
+    function encodeRoutePath(path){
+      let encoded="";
+      let previousLat=0;
+      let previousLng=0;
+      (path||[]).forEach(point=>{
+        const lat=routePointCoordinate(point,"lat");
+        const lng=routePointCoordinate(point,"lng");
+        if(lat===null || lng===null) return;
+        const latValue=Math.round(lat*1e5);
+        const lngValue=Math.round(lng*1e5);
+        [latValue-previousLat,lngValue-previousLng].forEach(delta=>{
+          let value=delta<0 ? ~(delta<<1) : delta<<1;
+          while(value>=0x20){
+            encoded+=String.fromCharCode((0x20|(value&0x1f))+63);
+            value>>=5;
+          }
+          encoded+=String.fromCharCode(value+63);
+        });
+        previousLat=latValue;
+        previousLng=lngValue;
+      });
+      return encoded;
+    }
+
     async function maybeComputeRoute(){
       if(!mapsRuntime.ready || !state.placeObjects.pickup || !state.placeObjects.dropoff){
         resetRoutePreview();
@@ -1848,6 +1878,7 @@
           distanceMeters:route.distanceMeters||0,
           durationMillis:route.durationMillis||0,
           path:route.path||[],
+          route_polyline:encodeRoutePath(route.path||[]),
           routeObject:route
         };
 
@@ -2208,10 +2239,6 @@
         ok=false;
       }
 
-      if(!$("consent").checked){
-        showToast("Please accept the booking update consent.");
-        return false;
-      }
       if(!ok) showToast("Please complete the booking contact details.");
       return ok;
     }
@@ -2246,6 +2273,11 @@
         pickup_time:d.pickupTime,
         pickup:toBackendPlace(d.pickupPlace,d.pickupAddress,d.pickupType),
         dropoff:toBackendPlace(d.dropoffPlace,d.dropoffAddress,d.dropoffType),
+        pickup_lat:d.route?.pickup_lat ?? d.pickupPlace?.lat ?? null,
+        pickup_lng:d.route?.pickup_lng ?? d.pickupPlace?.lng ?? null,
+        dropoff_lat:d.route?.dropoff_lat ?? d.dropoffPlace?.lat ?? null,
+        dropoff_lng:d.route?.dropoff_lng ?? d.dropoffPlace?.lng ?? null,
+        route_polyline:d.route?.route_polyline || null,
         distance_miles:d.route?.distanceMiles ?? null,
         estimated_duration_minutes:d.route?.durationMinutes ?? null,
         passengers:Number(d.passengers||0),
@@ -2394,7 +2426,12 @@
           distanceMeters:state.route.distanceMeters,
           distanceMiles:Number(metersToMiles(state.route.distanceMeters).toFixed(2)),
           durationMillis:state.route.durationMillis,
-          durationMinutes:Math.round(state.route.durationMillis/60000)
+          durationMinutes:Math.round(state.route.durationMillis/60000),
+          route_polyline:state.route.route_polyline,
+          pickup_lat:state.placeData.pickup?.lat ?? null,
+          pickup_lng:state.placeData.pickup?.lng ?? null,
+          dropoff_lat:state.placeData.dropoff?.lat ?? null,
+          dropoff_lng:state.placeData.dropoff?.lng ?? null
         } : null,
         vehicleId:state.selectedVehicle,
         vehicle:state.selectedVehicle?vehicleData[state.selectedVehicle]:null,

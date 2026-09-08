@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Your Private Transportation Quote | NYC Lux Ride</title>
+  <link rel="stylesheet" href="quote.css" />
+</head>
+<body>
+  <header class="quote-header">
+    <div class="quote-header-inner">
+      <a class="brand" href="index.html" aria-label="NYC Lux Ride home">
+        <img src="assets/nyc-lux-ride-logo.png" alt="NYC Lux Ride" />
+        <span class="brand-fallback">NYC LUX RIDE</span>
+      </a>
+      <span class="header-caption">Private transportation</span>
+    </div>
+  </header>
+
+  <main class="quote-page">
+    <div id="loading-state" class="state-card">
+      <span class="state-mark" aria-hidden="true">✦</span>
+      <p>Loading your NYC Lux Ride quote...</p>
+    </div>
+
+    <section id="message-state" class="state-card" hidden>
+      <span id="message-mark" class="state-mark" aria-hidden="true">!</span>
+      <h1 id="message-title">Quote link is invalid.</h1>
+      <p id="message-text"></p>
+    </section>
+
+    <article id="quote-document" class="quote-document" hidden>
+      <section class="quote-intro">
+        <p class="eyebrow">Prepared exclusively for your upcoming ride</p>
+        <h1>Your Private Transportation Quote</h1>
+        <p id="greeting" class="greeting"></p>
+        <p class="intro-copy">Please review your trip details and pricing below.</p>
+      </section>
+
+      <section class="reference-strip" aria-label="Quote reference">
+        <div><span>Request Reference</span><strong id="request-reference">—</strong></div>
+        <div><span>Prepared Date</span><strong id="prepared-date">—</strong></div>
+      </section>
+
+      <div class="quote-layout">
+        <div class="quote-main-column">
+          <section class="quote-section" aria-labelledby="trip-heading">
+            <div class="section-kicker">Your journey</div>
+            <h2 id="trip-heading">Trip Details</h2>
+            <div class="trip-details-table" id="trip-meta"></div>
+            <div id="quote-map" class="quote-map"><div class="map-placeholder">Loading route map...</div></div>
+            <div id="stored-route-stats" class="stored-route-stats"></div>
+            <div class="route-timeline">
+              <div class="route-point">
+                <span class="route-dot pickup-dot" aria-hidden="true"></span>
+                <div><span class="route-label">Pickup</span><strong id="pickup-location">—</strong></div>
+              </div>
+              <div class="route-line" aria-hidden="true"></div>
+              <div class="route-point">
+                <span class="route-dot dropoff-dot" aria-hidden="true"></span>
+                <div><span class="route-label">Drop-off</span><strong id="dropoff-location">—</strong></div>
+              </div>
+            </div>
+            <div id="return-route" class="return-route" hidden></div>
+          </section>
+
+          <section class="quote-section vehicle-section" aria-labelledby="vehicle-heading">
+            <div>
+              <div class="section-kicker">Your ride</div>
+              <h2 id="vehicle-heading">Selected Vehicle</h2>
+            </div>
+            <div class="vehicle-display">
+              <img id="vehicle-image" class="vehicle-image" alt="" hidden />
+              <strong id="vehicle-name" class="vehicle-name">—</strong>
+            </div>
+          </section>
+
+          <section id="customer-note" class="quote-section note-section" aria-labelledby="note-heading" hidden>
+            <div class="section-kicker">A personal note</div>
+            <h2 id="note-heading">A Note From NYC Lux Ride</h2>
+            <p id="customer-note-text"></p>
+          </section>
+        </div>
+
+        <aside class="pricing-panel" aria-labelledby="pricing-heading">
+          <h2 id="pricing-heading">Pricing Breakdown</h2>
+          <div id="line-items" class="line-items"></div>
+          <div class="total-rule"></div>
+          <div class="subtotal-row"><span>Subtotal</span><strong id="subtotal-amount">$0.00</strong></div>
+          <section class="gratuity-picker" aria-labelledby="gratuity-heading">
+            <h3 id="gratuity-heading">Optional Gratuity</h3>
+            <p>Choose an optional gratuity for your chauffeur.</p>
+            <div id="gratuity-options" class="gratuity-options">
+              <button type="button" data-gratuity="0" class="selected">No Gratuity</button>
+              <button type="button" data-gratuity="10">10%</button>
+              <button type="button" data-gratuity="15">15%</button>
+              <button type="button" data-gratuity="20">20%</button>
+            </div>
+            <div class="gratuity-result"><span>Gratuity</span><strong id="gratuity-amount">$0.00</strong></div>
+          </section>
+          <div class="total-rule"></div>
+          <div class="quote-total"><span>TOTAL QUOTE</span><strong id="total-amount">$0.00</strong><small id="currency-label">USD</small></div>
+          <section id="accept-quote-panel" class="accept-quote-panel" aria-labelledby="accept-quote-heading">
+            <button id="accept-quote" class="accept-quote-button" type="button">Accept Quote</button>
+            <p id="accept-quote-status" class="accept-quote-status" role="status" aria-live="polite" hidden></p>
+          </section>
+          <section id="accepted-quote-panel" class="accepted-quote-panel" aria-labelledby="accepted-quote-heading" hidden>
+            <h3 id="accepted-quote-heading">Quote Accepted</h3>
+            <p>Thank you. Your quote has been accepted.</p>
+            <p>Next step: Complete payment to confirm your reservation.</p>
+            <div class="accepted-total"><span>Accepted Total</span><strong id="accepted-total-amount">$0.00 USD</strong></div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="important-note" aria-label="Important information">
+        <span class="info-mark" aria-hidden="true">i</span>
+        <p>Final trip details are subject to the terms confirmed with NYC Lux Ride.</p>
+      </section>
+      <p class="contact-line">Contact NYC Lux Ride at <a href="tel:+16467750556">+1 (646) 775-0556</a> or <a href="mailto:info@nycluxride.com">info@nycluxride.com</a>.</p>
+    </article>
+  </main>
+
+  <div id="photo-modal" class="photo-modal" hidden role="dialog" aria-modal="true" aria-label="Vehicle accessory photo">
+    <button id="photo-modal-close" class="photo-modal-close" type="button" aria-label="Close photo">×</button>
+    <img id="photo-modal-image" alt="" />
+  </div>
+
+  <script src="backend-config.js"></script>
+  <script src="config.js"></script>
+  <script src="quote.js"></script>
+</body>
+</html>

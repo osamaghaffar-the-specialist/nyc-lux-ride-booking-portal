@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Pricing &amp; Fees | NYC Lux Ride</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="pricing">
+  <main class="dashboard-shell" aria-labelledby="pricing-title">
+    <section class="dashboard-panel pricing-panel">
+      <div class="dashboard-header">
+        <a class="brand" href="../index.html" aria-label="NYC Lux Ride home">
+          <span class="brand-mark">NYC</span>
+          <span class="brand-name">NYC LUX RIDE</span>
+        </a>
+        <div class="dashboard-header-actions">
+          <span class="dashboard-label">Pricing &amp; Fees</span>
+          <button id="sign-out" class="secondary-button" type="button">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="pricing-content">
+        <div class="pricing-topbar">
+          <div>
+            <p class="eyebrow">Operator controls</p>
+            <h1 id="pricing-title">Pricing &amp; Fees</h1>
+            <p class="pricing-subtitle">Configure default quote charges and operator controls.</p>
+          </div>
+          <div class="pricing-top-actions">
+            <a class="secondary-button" href="dashboard.html">Back to Dashboard</a>
+            <button id="refresh-pricing" class="secondary-button" type="button">Refresh Pricing</button>
+          </div>
+        </div>
+
+        <div id="pricing-alert" class="dashboard-alert" role="alert" aria-live="polite" hidden></div>
+        <div id="pricing-loading" class="detail-loading">Loading pricing rules...</div>
+        <div id="pricing-rules" class="pricing-groups" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../backend-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="admin-auth.js"></script>
+</body>
+</html>

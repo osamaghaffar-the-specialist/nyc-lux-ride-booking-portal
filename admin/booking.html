@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Booking Details | NYC Lux Ride</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="booking">
+  <main class="dashboard-shell" aria-labelledby="booking-title">
+    <section class="dashboard-panel booking-detail-panel">
+      <div class="dashboard-header">
+        <a class="brand" href="../index.html" aria-label="NYC Lux Ride home">
+          <span class="brand-mark">NYC</span>
+          <span class="brand-name">NYC LUX RIDE</span>
+        </a>
+        <div class="dashboard-header-actions">
+          <span class="dashboard-label">Booking Details</span>
+          <button id="sign-out" class="secondary-button" type="button">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="booking-detail-content">
+        <div class="detail-topbar">
+          <div>
+            <p class="eyebrow">Read-only request</p>
+            <h1 id="booking-title">Booking Details</h1>
+            <p id="detail-request-code" class="detail-reference">Loading request...</p>
+          </div>
+          <a class="secondary-button detail-back-button" href="dashboard.html">Back to Dashboard</a>
+        </div>
+
+        <div id="booking-error" class="dashboard-alert" role="alert" aria-live="polite" hidden>
+          Booking request could not be loaded.
+        </div>
+
+        <div id="booking-loading" class="detail-loading">Loading booking request...</div>
+        <div id="booking-content" hidden>
+          <div class="detail-summary">
+            <div class="summary-item">
+              <span>Request Reference</span>
+              <strong id="summary-request-code">—</strong>
+            </div>
+            <div class="summary-item">
+              <span>Status</span>
+              <strong id="summary-status"></strong>
+            </div>
+          </div>
+
+          <section class="detail-card actions-card" aria-labelledby="actions-heading">
+            <div class="actions-heading">
+              <div>
+                <p class="eyebrow">Controlled workflow</p>
+                <h2 id="actions-heading">Booking Actions</h2>
+              </div>
+            </div>
+            <div id="booking-action-alert" class="action-alert" role="status" aria-live="polite" hidden></div>
+            <div id="booking-actions" class="booking-actions"></div>
+          </section>
+
+          <section id="quote-builder" class="detail-card quote-builder-card" aria-labelledby="quote-builder-heading" hidden>
+            <div class="quote-builder-heading">
+              <div>
+                <p class="eyebrow">Reviewing workflow</p>
+                <h2 id="quote-builder-heading">Smart Quote Builder</h2>
+              </div>
+              <div class="quote-total-highlight">
+                <span>Live Total</span>
+                <strong id="quote-live-total">$0.00</strong>
+              </div>
+            </div>
+            <div id="quote-builder-alert" class="action-alert error-alert" role="alert" aria-live="polite" hidden></div>
+            <div id="quote-rules-loading" class="detail-loading">Loading quote charges...</div>
+            <div id="quote-rule-controls" class="quote-rule-controls" hidden>
+              <section class="quote-charge-section" aria-labelledby="base-fare-section-heading">
+                <h3 id="base-fare-section-heading">Base Fare</h3>
+                <div id="base-fare-control" class="quote-charge-list"></div>
+              </section>
+              <section class="quote-charge-section" aria-labelledby="gratuity-section-heading">
+                <h3 id="gratuity-section-heading">Gratuity</h3>
+                <p class="operator-note">Optional gratuity is selected by the customer when reviewing the quote.</p>
+              </section>
+              <section class="quote-charge-section selected-charges-section" aria-labelledby="selected-charges-heading">
+                <div class="selected-charges-heading">
+                  <h3 id="selected-charges-heading">Selected Charges</h3>
+                  <button id="add-charge" class="add-charge-button" type="button">+ Add Charge</button>
+                </div>
+                <div id="selected-charge-controls" class="quote-charge-list"></div>
+                <div id="add-charge-panel" class="add-charge-panel" hidden></div>
+              </section>
+            </div>
+            <div class="quote-notes-grid">
+              <label class="quote-field">
+                <span>Customer Note</span>
+                <textarea id="quote-customer-note" rows="3" placeholder="Optional note for the customer"></textarea>
+              </label>
+              <label class="quote-field internal-note-field">
+                <span>Internal Note <small>Internal — not visible to customer</small></span>
+                <textarea id="quote-internal-note" rows="3" placeholder="Optional operator note"></textarea>
+              </label>
+              <label class="quote-field">
+                <span>Valid Until</span>
+                <input id="quote-valid-until" type="date" />
+              </label>
+            </div>
+            <div class="quote-summary" aria-labelledby="quote-summary-heading">
+              <h3 id="quote-summary-heading">Quote Summary</h3>
+              <div id="quote-summary-lines" class="quote-summary-lines"></div>
+              <div class="quote-summary-total"><span>Total</span><strong id="quote-summary-total">$0.00</strong></div>
+            </div>
+            <button id="create-quote" class="action-button create-quote-button" type="button">Create Quote</button>
+          </section>
+
+          <section id="existing-quote" class="detail-card existing-quote-card" aria-labelledby="existing-quote-heading" hidden>
+            <div class="quote-builder-heading">
+              <div>
+                <p class="eyebrow">Read-only quote</p>
+                <h2 id="existing-quote-heading">Latest Quote</h2>
+              </div>
+              <strong id="existing-quote-total" class="quote-total-text">$0.00</strong>
+            </div>
+            <div id="existing-quote-summary" class="quote-summary-lines"></div>
+          </section>
+
+          <section id="customer-quote-access" class="detail-card customer-quote-access" aria-labelledby="customer-quote-access-heading" hidden>
+            <p class="eyebrow">Customer handoff</p>
+            <h2 id="customer-quote-access-heading">Customer Quote</h2>
+            <p>Share this customer-safe quote with the passenger.</p>
+            <div id="customer-quote-access-alert" class="action-alert" role="status" aria-live="polite" hidden></div>
+            <div class="customer-quote-actions">
+              <button id="view-customer-quote" class="action-button" type="button">View Customer Quote</button>
+              <button id="copy-quote-link" class="action-button secondary-action-button" type="button">Copy Quote Link</button>
+            </div>
+          </section>
+
+          <section id="quote-history" class="detail-card quote-history-card" aria-labelledby="quote-history-heading" hidden>
+            <h2 id="quote-history-heading">Quote History</h2>
+            <div id="quote-history-list" class="quote-history-list"></div>
+          </section>
+
+          <div class="detail-sections">
+            <section class="detail-card" aria-labelledby="customer-heading">
+              <h2 id="customer-heading">Customer</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>First Name</span><strong id="first-name">—</strong></div>
+                <div class="detail-field"><span>Last Name</span><strong id="last-name">—</strong></div>
+                <div class="detail-field"><span>Email</span><strong id="email">—</strong></div>
+                <div class="detail-field"><span>Phone</span><strong id="phone">—</strong></div>
+                <div class="detail-field"><span>Phone Dial Code</span><strong id="phone-dial-code">—</strong></div>
+                <div class="detail-field"><span>SMS Consent</span><strong id="sms-consent">—</strong></div>
+              </div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="trip-heading">
+              <h2 id="trip-heading">Trip</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>Trip Type</span><strong id="trip-type">—</strong></div>
+                <div class="detail-field"><span>Pickup Date</span><strong id="pickup-date">—</strong></div>
+                <div class="detail-field"><span>Pickup Time</span><strong id="pickup-time">—</strong></div>
+                <div class="detail-field" id="hourly-hours-field"><span>Hourly Hours</span><strong id="hourly-hours">—</strong></div>
+              </div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="route-heading">
+              <h2 id="route-heading">Route</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>Pickup Type</span><strong id="pickup-type">—</strong></div>
+                <div class="detail-field detail-field-wide"><span>Pickup Location</span><strong id="pickup-location">—</strong></div>
+                <div class="detail-field"><span>Drop-off Type</span><strong id="dropoff-type">—</strong></div>
+                <div class="detail-field detail-field-wide"><span>Drop-off Location</span><strong id="dropoff-location">—</strong></div>
+                <div class="detail-field"><span>Distance</span><strong id="distance">—</strong></div>
+                <div class="detail-field"><span>Estimated Drive Time</span><strong id="drive-time">—</strong></div>
+              </div>
+            </section>
+
+            <section id="round-trip-section" class="detail-card" aria-labelledby="round-trip-heading" hidden>
+              <h2 id="round-trip-heading">Round Trip</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>Return Date</span><strong id="return-date">—</strong></div>
+                <div class="detail-field"><span>Return Time</span><strong id="return-time">—</strong></div>
+                <div class="detail-field"><span>Return Pickup Type</span><strong id="return-pickup-type">—</strong></div>
+                <div class="detail-field detail-field-wide"><span>Return Pickup Location</span><strong id="return-pickup-location">—</strong></div>
+                <div class="detail-field"><span>Return Drop-off Type</span><strong id="return-dropoff-type">—</strong></div>
+                <div class="detail-field detail-field-wide"><span>Return Drop-off Location</span><strong id="return-dropoff-location">—</strong></div>
+              </div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="stops-heading">
+              <h2 id="stops-heading">Additional Stops</h2>
+              <div id="stops-list" class="stops-list">No additional stops.</div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="passengers-heading">
+              <h2 id="passengers-heading">Passengers &amp; Trip Details</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>Passengers</span><strong id="passengers">—</strong></div>
+                <div class="detail-field"><span>Luggage</span><strong id="luggage">—</strong></div>
+                <div class="detail-field"><span>Flight Number</span><strong id="flight-number">—</strong></div>
+                <div class="detail-field detail-field-wide"><span>Special Instructions</span><strong id="trip-notes">—</strong></div>
+              </div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="vehicle-heading">
+              <h2 id="vehicle-heading">Vehicle</h2>
+              <div class="detail-grid detail-grid-single">
+                <div class="detail-field"><span>Selected Vehicle</span><strong id="vehicle">—</strong></div>
+              </div>
+            </section>
+
+            <section class="detail-card" aria-labelledby="request-heading">
+              <h2 id="request-heading">Request Details</h2>
+              <div class="detail-grid">
+                <div class="detail-field"><span>Created At</span><strong id="created-at">—</strong></div>
+                <div class="detail-field"><span>Updated At</span><strong id="updated-at">—</strong></div>
+                <div class="detail-field"><span>Request Reference</span><strong id="request-reference">—</strong></div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <a class="secondary-button detail-bottom-back" href="dashboard.html">Back to Dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../backend-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="admin-auth.js"></script>
+</body>
+</html>

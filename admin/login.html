@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Admin Portal | NYC Lux Ride</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="login">
+  <main class="auth-shell">
+    <section class="auth-panel" aria-labelledby="login-title">
+      <a class="brand" href="../index.html" aria-label="NYC Lux Ride home">
+        <span class="brand-mark">NYC</span>
+        <span class="brand-name">NYC LUX RIDE</span>
+      </a>
+
+      <div class="panel-heading">
+        <p class="eyebrow">Private access</p>
+        <h1 id="login-title">ADMIN PORTAL</h1>
+        <p class="intro">Sign in to manage your NYC Lux Ride operations.</p>
+      </div>
+
+      <form id="login-form" class="login-form" novalidate>
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" autocomplete="username" required />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
+
+        <div id="auth-error" class="error-message" role="alert" aria-live="polite" hidden></div>
+        <button class="primary-button" type="submit">Sign In</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../backend-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="admin-auth.js"></script>
+</body>
+</html>

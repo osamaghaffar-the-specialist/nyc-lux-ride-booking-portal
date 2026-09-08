@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Dashboard | NYC Lux Ride</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body data-page="dashboard">
+  <main class="dashboard-shell" aria-labelledby="dashboard-title">
+    <section class="dashboard-panel">
+      <div class="dashboard-header">
+        <a class="brand" href="../index.html" aria-label="NYC Lux Ride home">
+          <span class="brand-mark">NYC</span>
+          <span class="brand-name">NYC LUX RIDE</span>
+        </a>
+        <div class="dashboard-header-actions">
+          <span class="dashboard-label">Operations Dashboard</span>
+          <a class="header-link" href="pricing.html">Pricing &amp; Fees</a>
+          <button id="sign-out" class="secondary-button" type="button">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="dashboard-content">
+        <p class="eyebrow">Operations</p>
+        <h1 id="dashboard-title">Operations Dashboard</h1>
+        <p id="welcome-message" class="welcome-message">Checking access...</p>
+
+        <div class="dashboard-alert" id="dashboard-alert" role="alert" aria-live="polite" hidden></div>
+
+        <section aria-labelledby="stats-title">
+          <div class="section-heading">
+            <p class="eyebrow" id="stats-title">Booking pipeline</p>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card"><span>New Requests</span><strong id="stat-new">0</strong></article>
+            <article class="stat-card"><span>Quoted</span><strong id="stat-quoted">0</strong></article>
+            <article class="stat-card"><span>Awaiting Payment</span><strong id="stat-awaiting-payment">0</strong></article>
+            <article class="stat-card"><span>Confirmed</span><strong id="stat-confirmed">0</strong></article>
+            <article class="stat-card"><span>Completed</span><strong id="stat-completed">0</strong></article>
+          </div>
+        </section>
+
+        <section class="bookings-section" aria-labelledby="recent-bookings-title">
+          <div class="bookings-heading">
+            <div>
+              <p class="eyebrow">Read-only view</p>
+              <h2 id="recent-bookings-title">Recent Booking Requests</h2>
+            </div>
+            <button id="refresh-bookings" class="secondary-button" type="button">Refresh Bookings</button>
+          </div>
+
+          <div class="booking-controls">
+            <label class="search-control" for="booking-search">
+              <span>Search bookings</span>
+              <input id="booking-search" type="search" placeholder="Reference, customer, email, or phone" autocomplete="off" />
+            </label>
+            <label class="filter-control" for="status-filter">
+              <span>Status</span>
+              <select id="status-filter">
+                <option value="">All Statuses</option>
+                <option value="new">New</option>
+                <option value="reviewing">Reviewing</option>
+                <option value="quoted">Quoted</option>
+                <option value="awaiting_payment">Awaiting Payment</option>
+                <option value="paid">Paid</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-wrap">
+            <table class="bookings-table">
+              <thead>
+                <tr>
+                  <th scope="col">Request Reference</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Trip Type</th>
+                  <th scope="col">Pickup Date</th>
+                  <th scope="col">Pickup Location</th>
+                  <th scope="col">Drop-off Location</th>
+                  <th scope="col">Vehicle</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Created</th>
+                </tr>
+              </thead>
+              <tbody id="bookings-body">
+                <tr><td class="table-state" colspan="9">Loading booking requests...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="../backend-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="admin-auth.js"></script>
+</body>
+</html>
