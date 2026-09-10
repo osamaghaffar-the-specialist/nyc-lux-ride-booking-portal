@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const config = window.NYC_LUX_RIDE_BACKEND_CONFIG || {};
   let currentQuote = null;
   let selectedGratuity = 0;
@@ -138,12 +138,18 @@
         info.appendChild(detail);
       }
       const photoKey = String(item.label || "").toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_|_$/g, "");
-      if (childSeatAssets[photoKey]) {
+      const photoUrl =
+        typeof item.image_url === "string" &&
+        item.image_url.trim()
+          ? item.image_url.trim()
+          : childSeatAssets[photoKey] || null;
+
+      if (photoUrl) {
         const photoButton = document.createElement("button");
         photoButton.type = "button";
         photoButton.className = "photo-button";
-        photoButton.textContent = "View Photo";
-        photoButton.addEventListener("click", () => openPhoto(childSeatAssets[photoKey], item.label));
+        photoButton.textContent = "SEE THE IMAGE";
+        photoButton.addEventListener("click", () => openPhoto(photoUrl, item.label));
         info.appendChild(photoButton);
       }
       const amount = document.createElement("span");
@@ -252,21 +258,72 @@
     } finally {
       acceptingQuote = false;
     }
+  } 
+
+ function setupVehicle(quote) {
+  const key =
+    String(quote.vehicle || "")
+      .trim()
+      .toLowerCase();
+
+  const fallbackVehicle =
+    vehicleAssets[key];
+
+  const vehicleName =
+    quote.vehicle_name ||
+    fallbackVehicle?.name ||
+    friendlyVehicle(quote.vehicle);
+
+  const vehicleImageUrl =
+    quote.vehicle_image_url ||
+    fallbackVehicle?.image ||
+    "";
+
+  const nameElement =
+    document.getElementById("vehicle-name");
+
+  const image =
+    document.getElementById("vehicle-image");
+
+  if (nameElement) {
+    nameElement.textContent =
+      vehicleName || "Selected Vehicle";
   }
 
-  function setupVehicle(quote) {
-    const key = String(quote.vehicle || "").toLowerCase();
-    const vehicle = vehicleAssets[key];
-    document.getElementById("vehicle-name").textContent = vehicle?.name || friendlyVehicle(quote.vehicle);
-    const image = document.getElementById("vehicle-image");
-    if (!vehicle?.image) return;
-    image.src = vehicle.image;
-    image.alt = vehicle.name;
-    image.hidden = false;
-    image.addEventListener("error", () => {
-      image.hidden = true;
-    }, { once: true });
+  if (!image) {
+    return;
   }
+
+  image.hidden = true;
+  image.removeAttribute("src");
+
+  if (!vehicleImageUrl) {
+    console.warn(
+      "No vehicle image available for:",
+      quote.vehicle
+    );
+    return;
+  }
+
+  image.alt =
+    vehicleName || "Selected Vehicle";
+
+  image.onload = () => {
+    image.hidden = false;
+  };
+
+  image.onerror = () => {
+    console.error(
+      "Vehicle image could not be loaded:",
+      vehicleImageUrl
+    );
+
+    image.hidden = true;
+  };
+
+  image.src =
+    vehicleImageUrl;
+}
 
   function installMapsBootstrap(apiKey) {
     if (window.google?.maps?.importLibrary) return Promise.resolve();

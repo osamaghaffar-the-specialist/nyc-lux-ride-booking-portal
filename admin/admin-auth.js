@@ -102,7 +102,7 @@
 
   function displayValue(value) {
     if (value === null || value === undefined || String(value).trim() === "") {
-      return "—";
+      return "â€”";
     }
     return String(value);
   }
@@ -114,7 +114,7 @@
   }
 
   function formatDate(value) {
-    if (!value) return "—";
+    if (!value) return "â€”";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return displayValue(value);
     return new Intl.DateTimeFormat(undefined, {
@@ -273,7 +273,7 @@
   function setDetailValue(id, value) {
     const element = document.getElementById(id);
     const hasValue = value !== null && value !== undefined && String(value).trim() !== "";
-    element.textContent = hasValue ? String(value) : "—";
+    element.textContent = hasValue ? String(value) : "â€”";
     element.classList.toggle("is-empty", !hasValue);
   }
 
@@ -545,7 +545,7 @@
       const calculationNote = item.component.card.querySelector(".quote-charge-calc");
       if (calculationNote) {
         if (item.calculationType === "per_unit") {
-          calculationNote.textContent = `${item.quantity} × ${currency(item.rate)} = ${currency(item.amount)}`;
+          calculationNote.textContent = `${item.quantity} Ã— ${currency(item.rate)} = ${currency(item.amount)}`;
         } else if (item.calculationType === "percentage") {
           calculationNote.textContent = `${item.percentage}% = ${currency(item.amount)}`;
         } else {
@@ -770,35 +770,409 @@
       more.forEach((rule) => panel.appendChild(addRuleButton(rule)));
     }
   }
+async function loadVehiclePricingSuggestion() {
+  const baseFareRule = quotePricingRules.find(
+    (rule) => rule.code === "base_fare"
+  );
 
+  const baseComponent =
+    baseFareRule && quoteComponents.get(baseFareRule.id);
+
+  const baseInput =
+    baseComponent &&
+    quoteControlValue(baseComponent, "rate");
+
+  const container =
+    document.getElementById("base-fare-control");
+
+  if (!container || !baseInput || !bookingDetail) {
+    return;
+  }
+
+  /*
+   * Remove old suggestion if this function runs again.
+   */
+  container
+    .querySelector(".vehicle-pricing-suggestion")
+    ?.remove();
+
+  const vehicleCode =
+    String(
+      bookingDetail.preferred_vehicle_code || ""
+    ).trim();
+
+  const tripType =
+    String(
+      bookingDetail.trip_type || ""
+    ).trim();
+
+  if (!vehicleCode || !tripType) {
+    return;
+  }
+
+  /*
+   * Round-trip pricing is intentionally kept manual
+   * until we know that booking.distance_miles contains
+   * the COMPLETE round-trip mileage.
+   */
+  if (tripType === "round-trip") {
+    return;
+  }
+
+  const distanceMiles =
+    tripType === "hourly"
+      ? null
+      : Number(bookingDetail.distance_miles);
+
+  const hourlyHours =
+    tripType === "hourly"
+      ? Number(bookingDetail.hourly_hours)
+      : null;
+
+  const tripDate =
+    bookingDetail.pickup_date || null;
+
+  try {
+    const result = await supabase.rpc(
+      "calculate_vehicle_base_fare",
+      {
+        p_vehicle_code: vehicleCode,
+        p_trip_type: tripType,
+        p_distance_miles:
+          Number.isFinite(distanceMiles)
+            ? distanceMiles
+            : null,
+        p_hourly_hours:
+          Number.isFinite(hourlyHours)
+            ? hourlyHours
+            : null,
+        p_trip_date: tripDate
+      }
+    );
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    const pricing = result.data;
+
+    /*
+     * Pricing not configured / automation disabled:
+     * keep manual Base Fare silently available.
+     */
+    if (!pricing || pricing.ok !== true) {
+      console.info(
+        "Automated vehicle pricing unavailable:",
+        pricing?.error || "Unknown reason"
+      );
+      return;
+    }
+
+    const suggested =
+      Number(pricing.suggested_base_fare);
+
+    if (!Number.isFinite(suggested)) {
+      return;
+    }
+
+    const card =
+      document.createElement("article");
+
+    card.className =
+      "vehicle-pricing-suggestion";
+
+    card.style.cssText = `
+      margin-bottom:16px;
+      padding:18px;
+      border:1px solid #d8c49f;
+      border-radius:12px;
+      background:linear-gradient(180deg,#fffdf8,#f8f0e2);
+    `;
+
+    const heading =
+      document.createElement("div");
+
+    heading.innerHTML = `
+      <div style="
+        font-size:10px;
+        font-weight:800;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+        color:#946b27;
+        margin-bottom:6px;
+      ">
+        Automated Vehicle Pricing
+      </div>
+
+      <div style="
+        font-size:18px;
+        font-weight:700;
+        margin-bottom:14px;
+      ">
+        ${pricing.vehicle_name || vehicleCode}
+      </div>
+    `;
+
+    card.appendChild(heading);
+
+    const details =
+      document.createElement("div");
+
+    details.style.cssText = `
+      display:grid;
+      gap:8px;
+      margin-bottom:16px;
+    `;
+
+    const addRow = (label, value) => {
+      const row =
+        document.createElement("div");
+
+      row.style.cssText = `
+        display:flex;
+        justify-content:space-between;
+        gap:20px;
+        padding-bottom:7px;
+        border-bottom:1px solid rgba(0,0,0,.07);
+        font-size:13px;
+      `;
+
+      const left =
+        document.createElement("span");
+
+      left.textContent = label;
+      left.style.color = "#6b6256";
+
+      const right =
+        document.createElement("strong");
+
+      right.textContent = value;
+
+      row.append(left, right);
+      details.appendChild(row);
+    };
+
+    if (pricing.pricing_mode === "distance") {
+      addRow(
+        "Trip Distance",
+        `${Number(pricing.distance_miles).toFixed(1)} miles`
+      );
+
+      addRow(
+        "Trip Rate",
+        `${currency(pricing.trip_rate_per_mile)} / mile`
+      );
+
+      addRow(
+        "Calculated Mileage Fare",
+        currency(pricing.raw_trip_fare)
+      );
+    }
+
+    if (
+      pricing.pricing_mode === "weekday_hourly" ||
+      pricing.pricing_mode === "weekend_hourly"
+    ) {
+      addRow(
+        "Pricing Mode",
+        pricing.pricing_mode === "weekend_hourly"
+          ? "Weekend Hourly"
+          : "Weekday Hourly"
+      );
+
+      addRow(
+        "Requested Hours",
+        String(pricing.requested_hours)
+      );
+
+      addRow(
+        "Billable Hours",
+        String(pricing.billable_hours)
+      );
+
+      addRow(
+        "Hourly Rate",
+        `${currency(pricing.hourly_rate)} / hour`
+      );
+    }
+
+    if (
+      pricing.minimum_base_rate !== null &&
+      pricing.minimum_base_rate !== undefined
+    ) {
+      addRow(
+        "Minimum Base Fare",
+        currency(pricing.minimum_base_rate)
+      );
+    }
+
+    card.appendChild(details);
+
+    const suggestion =
+      document.createElement("div");
+
+    suggestion.style.cssText = `
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding-top:3px;
+    `;
+
+    const amountWrap =
+      document.createElement("div");
+
+    amountWrap.innerHTML = `
+      <div style="
+        font-size:9px;
+        font-weight:800;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        color:#75644b;
+        margin-bottom:3px;
+      ">
+        Suggested Base Fare
+      </div>
+
+      <strong style="
+        font-size:25px;
+        font-family:Georgia,'Times New Roman',serif;
+      ">
+        ${currency(suggested)}
+      </strong>
+    `;
+
+    const applyButton =
+      document.createElement("button");
+
+    applyButton.type = "button";
+
+    applyButton.textContent =
+      `Apply ${currency(suggested)}`;
+
+    applyButton.style.cssText = `
+      border:0;
+      background:#111;
+      color:#d5b06b;
+      padding:12px 16px;
+      border-radius:9px;
+      font-weight:800;
+      cursor:pointer;
+    `;
+
+    applyButton.addEventListener(
+      "click",
+      () => {
+        baseInput.value =
+          suggested.toFixed(2);
+
+        baseInput.dispatchEvent(
+          new Event("input", {
+            bubbles: true
+          })
+        );
+
+        refreshQuoteSummary();
+
+        applyButton.textContent =
+          "Applied âœ“";
+      }
+    );
+
+    suggestion.append(
+      amountWrap,
+      applyButton
+    );
+
+    card.appendChild(suggestion);
+
+    /*
+     * Put suggestion ABOVE existing Base Fare control.
+     */
+    container.prepend(card);
+
+  } catch (error) {
+    console.error(
+      "Vehicle pricing suggestion error:",
+      error
+    );
+
+    /*
+     * Never break the manual quote builder.
+     */
+  }
+}
   async function loadQuotePricingRules() {
     const result = await supabase
       .from("pricing_rules")
       .select("*")
       .eq("enabled", true)
       .order("sort_order", { ascending: true });
+
     if (result.error) throw result.error;
+
     quotePricingRules = (result.data || []).filter(
       (rule) => String(rule.code || "").toLowerCase() !== "gratuity"
     );
-    const baseFare = quotePricingRules.find((rule) => rule.code === "base_fare");
-    if (!baseFare) throw new Error("Base Fare pricing rule could not be found.");
+
+    const baseFare = quotePricingRules.find(
+      (rule) => rule.code === "base_fare"
+    );
+
+    if (!baseFare) {
+      throw new Error("Base Fare pricing rule could not be found.");
+    }
+
     quoteComponents = new Map();
-    const controls = document.getElementById("quote-rule-controls");
-    document.getElementById("base-fare-control").replaceChildren();
-    document.getElementById("selected-charge-controls").replaceChildren();
-    document.getElementById("add-charge-panel").hidden = true;
-    document.getElementById("base-fare-control").appendChild(createQuoteCharge(baseFare));
+
+    const controls =
+      document.getElementById("quote-rule-controls");
+
+    document
+      .getElementById("base-fare-control")
+      .replaceChildren();
+
+    document
+      .getElementById("selected-charge-controls")
+      .replaceChildren();
+
+    document.getElementById(
+      "add-charge-panel"
+    ).hidden = true;
+
+    document
+      .getElementById("base-fare-control")
+      .appendChild(
+        createQuoteCharge(baseFare)
+      );
+
     renderAddChargePanel();
-    document.getElementById("add-charge").onclick = () => {
-      const panel = document.getElementById("add-charge-panel");
+
+    document.getElementById(
+      "add-charge"
+    ).onclick = () => {
+      const panel =
+        document.getElementById(
+          "add-charge-panel"
+        );
+
       panel.hidden = !panel.hidden;
     };
-    controls.hidden = false;
-    document.getElementById("quote-rules-loading").hidden = true;
-    refreshQuoteSummary();
-  }
 
+    controls.hidden = false;
+
+    document.getElementById(
+      "quote-rules-loading"
+    ).hidden = true;
+
+    refreshQuoteSummary();
+
+    /*
+     * Vehicle-specific automated pricing suggestion.
+     * Manual Base Fare remains available.
+     */
+    await loadVehiclePricingSuggestion();
+  }
   function showQuoteBuilderError(error) {
     console.error("Quote builder error:", error);
     const alertElement = document.getElementById("quote-builder-alert");
@@ -1216,7 +1590,7 @@
   }
 
   function pricingDisplayValue(value) {
-    return value === null || value === undefined || String(value).trim() === "" ? "—" : String(value);
+    return value === null || value === undefined || String(value).trim() === "" ? "â€”" : String(value);
   }
 
   function createToggle(label, field, value) {

@@ -1715,3 +1715,47 @@ h1 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* MASTER NYC LUX RIDE LOGO */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: auto;
+  height: 68px;
+  max-width: 190px;
+  display: block;
+  object-fit: contain;
+}
+
+/* Larger presentation on Admin Login */
+.auth-panel .brand {
+  justify-content: center;
+}
+
+.auth-panel .brand-logo {
+  height: 120px;
+  max-width: 260px;
+}
+
+/* Header pages */
+.dashboard-header .brand-logo {
+  height: 68px;
+  max-width: 190px;
+}
+
+@media (max-width: 700px) {
+  .dashboard-header .brand-logo {
+    height: 56px;
+    max-width: 155px;
+  }
+
+  .auth-panel .brand-logo {
+    height: 100px;
+    max-width: 220px;
+  }
+}

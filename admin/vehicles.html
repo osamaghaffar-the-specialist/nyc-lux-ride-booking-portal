@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+
+  <title>Fleet Management | NYC Lux Ride</title>
+
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="vehicles.css" />
+</head>
+
+<body data-page="vehicles">
+
+  <main class="dashboard-shell">
+    <section class="dashboard-panel">
+
+      <!-- =========================
+           HEADER
+      ========================== -->
+
+      <header class="dashboard-header">
+
+        <a class="brand" href="../index.html" aria-label="NYC Lux Ride home">
+          <img class="brand-logo" src="../assets/nyc-lux-ride-logo.png" alt="NYC Lux Ride" />
+        </a>
+
+        <div class="dashboard-header-actions">
+
+          <span class="dashboard-label">Fleet Management</span>
+
+          <a class="header-link" href="dashboard.html">
+            Dashboard
+          </a>
+
+          <a class="header-link" href="pricing.html">
+            Pricing &amp; Fees
+          </a>
+
+          <button
+            id="sign-out"
+            class="secondary-button"
+            type="button"
+          >
+            Sign Out
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- =========================
+           PAGE CONTENT
+      ========================== -->
+
+      <div class="dashboard-content vehicles-page">
+
+        <section class="vehicles-page-header">
+
+          <div>
+            <p class="eyebrow">Fleet Operations</p>
+
+            <h1>Vehicles</h1>
+
+            <p class="vehicles-intro">
+              Manage your fleet, customer-facing vehicle information,
+              photos, features and vehicle-specific pricing.
+            </p>
+          </div>
+
+          <button
+            id="add-vehicle-button"
+            class="vehicle-primary-button"
+            type="button"
+          >
+            + Add Vehicle
+          </button>
+
+        </section>
+
+
+        <!-- ALERT -->
+
+        <div
+          id="vehicle-alert"
+          class="dashboard-alert"
+          role="alert"
+          aria-live="polite"
+          hidden
+        ></div>
+
+
+        <!-- =========================
+             SEARCH / FILTERS
+        ========================== -->
+
+        <section class="vehicle-toolbar">
+
+          <label class="vehicle-search">
+            <span>Search Fleet</span>
+
+            <input
+              id="vehicle-search"
+              type="search"
+              placeholder="Vehicle name, VIN, plate or category"
+              autocomplete="off"
+            />
+          </label>
+
+
+          <label class="vehicle-filter">
+            <span>Status</span>
+
+            <select id="vehicle-status-filter">
+              <option value="">All Vehicles</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="portal">Customer Portal</option>
+            </select>
+          </label>
+
+
+          <button
+            id="refresh-vehicles"
+            class="secondary-button"
+            type="button"
+          >
+            Refresh
+          </button>
+
+        </section>
+
+
+        <!-- =========================
+             FLEET TABLE
+        ========================== -->
+
+        <section class="fleet-section">
+
+          <div class="fleet-section-heading">
+
+            <div>
+              <p class="eyebrow">Current Fleet</p>
+              <h2>Vehicle Directory</h2>
+            </div>
+
+            <span id="vehicle-count" class="vehicle-count">
+              0 vehicles
+            </span>
+
+          </div>
+
+
+          <div id="vehicle-loading" class="vehicle-loading">
+            Loading fleet...
+          </div>
+
+
+          <div
+            id="vehicle-table-wrap"
+            class="vehicle-table-wrap"
+            hidden
+          >
+
+            <table class="vehicle-table">
+
+              <thead>
+                <tr>
+                  <th>Vehicle</th>
+                  <th>Category</th>
+                  <th>Passengers</th>
+                  <th>Luggage</th>
+                  <th>Plate</th>
+                  <th>Portal</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody id="vehicle-table-body"></tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+  </main>
+
+
+  <!-- =====================================================
+       DRAWER BACKDROP
+  ====================================================== -->
+
+  <div
+    id="vehicle-drawer-backdrop"
+    class="vehicle-drawer-backdrop"
+    hidden
+  ></div>
+
+
+  <!-- =====================================================
+       ADD / EDIT VEHICLE DRAWER
+  ====================================================== -->
+
+  <aside
+    id="vehicle-drawer"
+    class="vehicle-drawer"
+    aria-labelledby="vehicle-drawer-title"
+    aria-hidden="true"
+  >
+
+    <form id="vehicle-form">
+
+      <!-- DRAWER HEADER -->
+
+      <header class="vehicle-drawer-header">
+
+        <button
+          id="close-vehicle-drawer"
+          class="vehicle-drawer-close"
+          type="button"
+          aria-label="Close vehicle editor"
+        >X</button>
+
+        <div>
+          <p class="eyebrow" id="vehicle-drawer-mode">
+            Fleet Vehicle
+          </p>
+
+          <h2 id="vehicle-drawer-title">
+            Add New Vehicle
+          </h2>
+        </div>
+
+      </header>
+
+
+      <!-- DRAWER BODY -->
+
+      <div class="vehicle-drawer-body">
+
+        <input
+          id="vehicle-id"
+          type="hidden"
+        />
+
+
+        <!-- =============================================
+             GENERAL INFORMATION
+        ============================================== -->
+
+        <section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>01</span>
+
+            <div>
+              <h3>General Information</h3>
+              <p>Core vehicle and fleet identification details.</p>
+            </div>
+          </div>
+
+
+          <div class="vehicle-form-grid">
+
+            <label>
+              <span>Vehicle Name *</span>
+
+              <input
+                id="vehicle-name"
+                type="text"
+                required
+                placeholder="Cadillac Escalade"
+              />
+            </label>
+
+
+            <label>
+              <span>Vehicle Code *</span>
+
+              <input
+                id="vehicle-code"
+                type="text"
+                required
+                placeholder="escalade"
+              />
+
+              <small>
+                Lowercase letters, numbers, underscores and hyphens.
+              </small>
+            </label>
+
+
+            <label>
+              <span>Category *</span>
+
+              <input
+                id="vehicle-category"
+                type="text"
+                required
+                placeholder="Luxury SUV"
+              />
+            </label>
+
+
+            <label>
+              <span>Make</span>
+
+              <input
+                id="vehicle-make"
+                type="text"
+                placeholder="Cadillac"
+              />
+            </label>
+
+
+            <label>
+              <span>Model</span>
+
+              <input
+                id="vehicle-model"
+                type="text"
+                placeholder="Escalade"
+              />
+            </label>
+
+
+            <label>
+              <span>Model Year</span>
+
+              <input
+                id="vehicle-model-year"
+                type="number"
+                min="1900"
+                max="2100"
+                placeholder="2026"
+              />
+            </label>
+
+
+            <label>
+              <span>Exterior Color</span>
+
+              <input
+                id="vehicle-color"
+                type="text"
+                placeholder="Black"
+              />
+            </label>
+
+
+            <label>
+              <span>VIN Number</span>
+
+              <input
+                id="vehicle-vin"
+                type="text"
+                autocomplete="off"
+                placeholder="Vehicle identification number"
+              />
+            </label>
+
+
+            <label>
+              <span>License Plate Number</span>
+
+              <input
+                id="vehicle-license-plate"
+                type="text"
+                autocomplete="off"
+                placeholder="NY plate number"
+              />
+            </label>
+
+
+            <label>
+              <span>Passenger Capacity *</span>
+
+              <input
+                id="vehicle-passengers"
+                type="number"
+                min="1"
+                step="1"
+                required
+              />
+            </label>
+
+
+            <label>
+              <span>Luggage Capacity</span>
+
+              <input
+                id="vehicle-luggage"
+                type="number"
+                min="0"
+                step="1"
+              />
+            </label>
+
+
+            <label>
+              <span>Display Order</span>
+
+              <input
+                id="vehicle-display-order"
+                type="number"
+                min="0"
+                step="1"
+                value="0"
+              />
+            </label>
+
+          </div>
+
+
+          <label class="vehicle-full-field">
+            <span>Description</span>
+
+            <textarea
+              id="vehicle-description"
+              rows="4"
+              placeholder="Customer-facing description of this vehicle..."
+            ></textarea>
+          </label>
+
+        </section>
+
+
+        <!-- =============================================
+             PHOTOS
+        ============================================== -->
+
+        <section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>02</span>
+
+            <div>
+              <h3>Vehicle Photos</h3>
+
+              <p>
+                Upload up to three customer-facing photos.
+                Drag photos to rearrange them and select one featured photo.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="vehicle-photo-requirements">
+
+            <strong>Image Requirements</strong>
+
+            <span>Maximum 5 MB</span>
+            <span>JPG, PNG or WEBP</span>
+            <span>Minimum 800 x 600 px</span>
+            <span>4:3 aspect ratio</span>
+            <span>Recommended 1600 x 1200 px</span>
+
+          </div>
+
+<div
+  id="vehicle-photo-error"
+  class="vehicle-photo-error"
+  role="alert"
+  hidden
+></div>
+          <div id="vehicle-photo-grid" class="vehicle-photo-grid">
+
+            <!-- PHOTO SLOT 1 -->
+
+            <article
+              class="vehicle-photo-slot"
+              data-photo-position="1"
+              draggable="true"
+            >
+
+              <div class="vehicle-photo-preview">
+
+                <img
+                  class="vehicle-photo-image"
+                  alt=""
+                  hidden
+                />
+
+                <div class="vehicle-photo-placeholder">
+                  <strong>Photo 1</strong>
+                  <span>Add Vehicle Photo</span>
+                </div>
+
+
+                <button
+                  class="vehicle-photo-feature-button"
+                  type="button"
+                  title="Set as featured photo"
+                  data-action="feature-photo"
+                  hidden
+                >SET FEATURED</button>
+
+              </div>
+
+
+              <div class="vehicle-photo-actions">
+
+                <label class="vehicle-photo-upload">
+                  Choose Photo
+
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    data-photo-input="1"
+                    hidden
+                  />
+                </label>
+
+
+                <button
+                  class="vehicle-photo-remove"
+                  type="button"
+                  data-action="remove-photo"
+                  hidden
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- PHOTO SLOT 2 -->
+
+            <article
+              class="vehicle-photo-slot"
+              data-photo-position="2"
+              draggable="true"
+            >
+
+              <div class="vehicle-photo-preview">
+
+                <img
+                  class="vehicle-photo-image"
+                  alt=""
+                  hidden
+                />
+
+                <div class="vehicle-photo-placeholder">
+                  <strong>Photo 2</strong>
+                  <span>Add Vehicle Photo</span>
+                </div>
+
+
+                <button
+                  class="vehicle-photo-feature-button"
+                  type="button"
+                  title="Set as featured photo"
+                  data-action="feature-photo"
+                  hidden
+                >SET FEATURED</button>
+
+              </div>
+
+
+              <div class="vehicle-photo-actions">
+
+                <label class="vehicle-photo-upload">
+                  Choose Photo
+
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    data-photo-input="2"
+                    hidden
+                  />
+                </label>
+
+
+                <button
+                  class="vehicle-photo-remove"
+                  type="button"
+                  data-action="remove-photo"
+                  hidden
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- PHOTO SLOT 3 -->
+
+            <article
+              class="vehicle-photo-slot"
+              data-photo-position="3"
+              draggable="true"
+            >
+
+              <div class="vehicle-photo-preview">
+
+                <img
+                  class="vehicle-photo-image"
+                  alt=""
+                  hidden
+                />
+
+                <div class="vehicle-photo-placeholder">
+                  <strong>Photo 3</strong>
+                  <span>Add Vehicle Photo</span>
+                </div>
+
+
+                <button
+                  class="vehicle-photo-feature-button"
+                  type="button"
+                  title="Set as featured photo"
+                  data-action="feature-photo"
+                  hidden
+                >SET FEATURED</button>
+
+              </div>
+
+
+              <div class="vehicle-photo-actions">
+
+                <label class="vehicle-photo-upload">
+                  Choose Photo
+
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    data-photo-input="3"
+                    hidden
+                  />
+                </label>
+
+
+                <button
+                  class="vehicle-photo-remove"
+                  type="button"
+                  data-action="remove-photo"
+                  hidden
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <p class="vehicle-photo-help">The featured photo will be the main image shown to customers during vehicle selection.</p>
+
+        </section>
+
+
+        <!-- =============================================
+             FEATURES
+        ============================================== -->
+
+        <section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>03</span>
+
+            <div>
+              <h3>Vehicle Features</h3>
+
+              <p>
+                Select the amenities and policies available for this vehicle.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="vehicle-feature-group">
+
+            <h4>General</h4>
+
+            <div
+              id="vehicle-features-general"
+              class="vehicle-feature-grid"
+            ></div>
+
+          </div>
+
+
+          <div class="vehicle-feature-group">
+
+            <h4>Multimedia &amp; Connectivity</h4>
+
+            <div
+              id="vehicle-features-multimedia"
+              class="vehicle-feature-grid"
+            ></div>
+
+          </div>
+
+
+          <div class="vehicle-feature-group">
+
+            <h4>Policies</h4>
+
+            <div
+              id="vehicle-features-policies"
+              class="vehicle-feature-grid"
+            ></div>
+
+          </div>
+
+
+          <label class="vehicle-full-field">
+            <span>Other Features / Amenities</span>
+
+            <textarea
+              id="vehicle-custom-features"
+              rows="3"
+              placeholder="Example: Privacy partition, ambient lighting, leather seating..."
+            ></textarea>
+
+            <small>
+              Enter custom features separated by commas.
+            </small>
+          </label>
+
+        </section>
+
+
+        <!-- =============================================
+             PRICING
+        ============================================== -->
+
+        <section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>04</span>
+
+            <div>
+              <h3>Vehicle Pricing</h3>
+
+              <p>
+                Optional automated pricing configuration for this vehicle.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="vehicle-pricing-heading">
+            Transfer / Point-to-Point
+          </div>
+
+
+          <div class="vehicle-form-grid">
+
+            <label>
+              <span>Minimum Total Base Rate</span>
+
+              <div class="vehicle-money-field">
+                <span>$</span>
+
+                <input
+                  id="pricing-minimum-base"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </label>
+
+
+            <label>
+              <span>Deadhead Rate Per Mile</span>
+
+              <div class="vehicle-money-field">
+                <span>$</span>
+
+                <input
+                  id="pricing-deadhead-mile"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </label>
+
+
+            <label>
+              <span>Trip Rate Per Mile</span>
+
+              <div class="vehicle-money-field">
+                <span>$</span>
+
+                <input
+                  id="pricing-trip-mile"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </label>
+
+          </div>
+
+
+          <div class="vehicle-pricing-heading">
+            Hourly
+          </div>
+
+
+          <div class="vehicle-form-grid">
+
+            <label>
+              <span>Weekday Hourly Rate</span>
+
+              <div class="vehicle-money-field">
+                <span>$</span>
+
+                <input
+                  id="pricing-weekday-rate"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </label>
+
+
+            <label>
+              <span>Weekday Hourly Minimum</span>
+
+              <input
+                id="pricing-weekday-minimum"
+                type="number"
+                min="0"
+                step="0.5"
+                placeholder="2"
+              />
+            </label>
+
+
+            <label>
+              <span>Weekend Hourly Rate</span>
+
+              <div class="vehicle-money-field">
+                <span>$</span>
+
+                <input
+                  id="pricing-weekend-rate"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </label>
+
+
+            <label>
+              <span>Weekend Hourly Minimum</span>
+
+              <input
+                id="pricing-weekend-minimum"
+                type="number"
+                min="0"
+                step="0.5"
+                placeholder="2"
+              />
+            </label>
+
+
+            <label>
+              <span>Total Deadhead Duration</span>
+
+              <select id="pricing-deadhead-duration">
+                <option value="">Not Set</option>
+                <option value="30">30 Minutes</option>
+                <option value="60">1 Hour</option>
+                <option value="90">1.5 Hours</option>
+                <option value="120">2 Hours</option>
+                <option value="180">3 Hours</option>
+              </select>
+            </label>
+
+          </div>
+
+
+          <label class="vehicle-toggle-row">
+
+            <input
+              id="pricing-base-rate-automation"
+              type="checkbox"
+            />
+
+            <span>
+              <strong>Enable Base Rate Automation</strong>
+
+              <small>
+                Allow this vehicle's configured pricing to calculate
+                automated base rates.
+              </small>
+            </span>
+
+          </label>
+
+
+          <label class="vehicle-toggle-row">
+
+            <input
+              id="pricing-customer-portal"
+              type="checkbox"
+            />
+
+            <span>
+              <strong>Use Automated Pricing on Customer Portal</strong>
+
+              <small>
+                Customer-facing pricing should only be enabled after
+                vehicle pricing has been fully reviewed.
+              </small>
+            </span>
+
+          </label>
+
+        </section>
+
+
+        <!-- =============================================
+             CUSTOMER PORTAL
+        ============================================== -->
+
+        
+        <!-- =============================================
+             CUSTOMER ADD-ON IMAGES
+        ============================================== -->
+
+        <section
+          id="customer-addon-images-section"
+          class="vehicle-form-section"
+        >
+
+          <div class="vehicle-section-title">
+            <span>05</span>
+
+            <div>
+              <h3>Customer Add-on Images</h3>
+
+              <p>
+                Manage customer-facing images for child-seat add-ons.
+                These images are shared across customer quotes.
+              </p>
+            </div>
+          </div>
+
+
+          <div
+            id="addon-image-error"
+            class="vehicle-photo-error"
+            role="alert"
+            aria-live="polite"
+            hidden
+          ></div>
+
+
+          <div class="vehicle-photo-requirements">
+            <strong>Image Requirements</strong>
+            <span>Maximum 5 MB</span>
+            <span>JPG, PNG or WEBP</span>
+          </div>
+
+
+          <div class="addon-image-grid">
+
+            <article
+              class="addon-image-card"
+              data-addon-code="forward_facing_seat"
+            >
+
+              <div class="addon-image-preview">
+
+                <img
+                  id="addon-image-forward_facing_seat"
+                  class="addon-image-photo"
+                  alt="Forward-facing Seat"
+                  hidden
+                />
+
+                <div
+                  id="addon-placeholder-forward_facing_seat"
+                  class="addon-image-placeholder"
+                >
+                  <strong>Forward-facing Seat</strong>
+                  <span>No image uploaded</span>
+                </div>
+
+              </div>
+
+
+              <div class="addon-image-content">
+
+                <strong>Forward-facing Seat</strong>
+                <small>Customer-facing seat image</small>
+
+                <input
+                  id="addon-input-forward_facing_seat"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  data-addon-input="forward_facing_seat"
+                  hidden
+                />
+
+                <div class="addon-image-actions">
+
+                  <label
+                    class="addon-image-upload"
+                    for="addon-input-forward_facing_seat"
+                  >
+                    Choose Image
+                  </label>
+
+                  <button
+                    class="addon-image-remove"
+                    type="button"
+                    data-addon-remove="forward_facing_seat"
+                    hidden
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+
+            <article
+              class="addon-image-card"
+              data-addon-code="rear_facing_seat"
+            >
+
+              <div class="addon-image-preview">
+
+                <img
+                  id="addon-image-rear_facing_seat"
+                  class="addon-image-photo"
+                  alt="Rear-facing Seat"
+                  hidden
+                />
+
+                <div
+                  id="addon-placeholder-rear_facing_seat"
+                  class="addon-image-placeholder"
+                >
+                  <strong>Rear-facing Seat</strong>
+                  <span>No image uploaded</span>
+                </div>
+
+              </div>
+
+
+              <div class="addon-image-content">
+
+                <strong>Rear-facing Seat</strong>
+                <small>Customer-facing seat image</small>
+
+                <input
+                  id="addon-input-rear_facing_seat"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  data-addon-input="rear_facing_seat"
+                  hidden
+                />
+
+                <div class="addon-image-actions">
+
+                  <label
+                    class="addon-image-upload"
+                    for="addon-input-rear_facing_seat"
+                  >
+                    Choose Image
+                  </label>
+
+                  <button
+                    class="addon-image-remove"
+                    type="button"
+                    data-addon-remove="rear_facing_seat"
+                    hidden
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+
+            <article
+              class="addon-image-card"
+              data-addon-code="booster_seat"
+            >
+
+              <div class="addon-image-preview">
+
+                <img
+                  id="addon-image-booster_seat"
+                  class="addon-image-photo"
+                  alt="Booster Seat"
+                  hidden
+                />
+
+                <div
+                  id="addon-placeholder-booster_seat"
+                  class="addon-image-placeholder"
+                >
+                  <strong>Booster Seat</strong>
+                  <span>No image uploaded</span>
+                </div>
+
+              </div>
+
+
+              <div class="addon-image-content">
+
+                <strong>Booster Seat</strong>
+                <small>Customer-facing seat image</small>
+
+                <input
+                  id="addon-input-booster_seat"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  data-addon-input="booster_seat"
+                  hidden
+                />
+
+                <div class="addon-image-actions">
+
+                  <label
+                    class="addon-image-upload"
+                    for="addon-input-booster_seat"
+                  >
+                    Choose Image
+                  </label>
+
+                  <button
+                    class="addon-image-remove"
+                    type="button"
+                    data-addon-remove="booster_seat"
+                    hidden
+                  >
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <p class="vehicle-photo-help">The featured photo will be the main image shown to customers during vehicle selection.</p>
+
+        </section>
+
+<section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>06</span>
+
+            <div>
+              <h3>Availability</h3>
+
+              <p>
+                Control whether the vehicle is operational and visible online.
+              </p>
+            </div>
+          </div>
+
+
+          <label class="vehicle-toggle-row">
+
+            <input
+              id="vehicle-active"
+              type="checkbox"
+              checked
+            />
+
+            <span>
+              <strong>Vehicle Active</strong>
+
+              <small>
+                Vehicle remains available for internal operations.
+              </small>
+            </span>
+
+          </label>
+
+
+          <label class="vehicle-toggle-row">
+
+            <input
+              id="vehicle-display-portal"
+              type="checkbox"
+              checked
+            />
+
+            <span>
+              <strong>Display on Customer Portal</strong>
+
+              <small>
+                Allow customers to see and select this vehicle.
+              </small>
+            </span>
+
+          </label>
+
+        </section>
+
+
+        <!-- =============================================
+             INTERNAL
+        ============================================== -->
+
+        <section class="vehicle-form-section">
+
+          <div class="vehicle-section-title">
+            <span>06</span>
+
+            <div>
+              <h3>Internal Notes</h3>
+
+              <p>
+                Private operational notes. Customers will never see this field.
+              </p>
+            </div>
+          </div>
+
+
+          <textarea
+            id="vehicle-internal-notes"
+            class="vehicle-internal-notes"
+            rows="5"
+            placeholder="Internal notes..."
+          ></textarea>
+
+        </section>
+
+      </div>
+
+
+      <!-- =============================================
+           DRAWER FOOTER
+      ============================================== -->
+
+      <footer class="vehicle-drawer-footer">
+
+        <button
+          id="cancel-vehicle"
+          class="secondary-button"
+          type="button"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          id="save-vehicle"
+          class="vehicle-primary-button"
+          type="submit"
+        >
+          Save Vehicle
+        </button>
+
+      </footer>
+
+    </form>
+
+  </aside>
+
+
+  <!-- CONFIG -->
+  <script src="../backend-config.js"></script>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+
+  <!-- VEHICLES -->
+  <script src="vehicles.js"></script>
+
+</body>
+</html>
