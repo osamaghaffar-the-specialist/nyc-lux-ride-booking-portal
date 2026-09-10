@@ -164,7 +164,7 @@
               <img
                 src="${escapeVehicleHtml(imageUrl)}"
                 alt="${escapeVehicleHtml(vehicle.name)}"
-                loading="lazy"
+                loading="lazy" decoding="async" fetchpriority="low"
               />
             `
             : `

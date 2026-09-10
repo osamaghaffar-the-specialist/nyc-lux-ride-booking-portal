@@ -219,27 +219,48 @@
   }
 
   async function fetchBookingData() {
-    const bookingResult = await supabase
+    const bookingQuery = supabase
       .from("bookings")
-      .select("*")
+      .select("id, request_code, first_name, last_name, email, phone_e164, trip_type, pickup_date, pickup_address, dropoff_address, preferred_vehicle_code, status, created_at")
       .order("created_at", { ascending: false })
       .limit(50);
 
-    if (bookingResult.error) throw bookingResult.error;
+    const statusQuery = supabase
+      .from("bookings")
+      .select("status");
 
-    const countResults = await Promise.all(
-      bookingStatuses.map((status) => supabase
-        .from("bookings")
-        .select("status", { count: "exact", head: true })
-        .eq("status", status))
-    );
-    const countError = countResults.find((result) => result.error)?.error;
-    if (countError) throw countError;
+    const [bookingResult, statusResult] = await Promise.all([
+      bookingQuery,
+      statusQuery
+    ]);
+
+    if (bookingResult.error) {
+      throw bookingResult.error;
+    }
+
+    if (statusResult.error) {
+      throw statusResult.error;
+    }
 
     const counts = Object.fromEntries(
-      bookingStatuses.map((status, index) => [status, countResults[index].count || 0])
+      bookingStatuses.map(status => [status, 0])
     );
-    return { bookings: bookingResult.data || [], counts };
+
+    (statusResult.data || []).forEach(row => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          counts,
+          row.status
+        )
+      ) {
+        counts[row.status] += 1;
+      }
+    });
+
+    return {
+      bookings: bookingResult.data || [],
+      counts
+    };
   }
 
   async function loadBookings() {
@@ -1537,7 +1558,10 @@ async function loadVehiclePricingSuggestion() {
   }
 
   async function loadBookingDetail() {
-    const bookingId = new URLSearchParams(window.location.search).get("id");
+    const bookingId = new URLSearchParams(
+      window.location.search
+    ).get("id");
+
     if (!bookingId) {
       showBookingError();
       return;
@@ -1546,28 +1570,61 @@ async function loadVehiclePricingSuggestion() {
     bookingDetailId = bookingId;
 
     try {
-      const bookingResult = await supabase
+      const bookingQuery = supabase
         .from("bookings")
         .select("*")
         .eq("id", bookingId)
         .maybeSingle();
-      if (bookingResult.error || !bookingResult.data) {
-        throw bookingResult.error || new Error("Booking was not found.");
-      }
 
-      const stopsResult = await supabase
+      const stopsQuery = supabase
         .from("booking_stops")
-        .select("booking_id, leg, stop_order, address, place_id, lat, lng")
+        .select(
+          "booking_id, leg, stop_order, address, place_id, lat, lng"
+        )
         .eq("booking_id", bookingId)
         .order("leg", { ascending: true })
         .order("stop_order", { ascending: true });
-      if (stopsResult.error) throw stopsResult.error;
 
-      renderBookingDetail(bookingResult.data, stopsResult.data || []);
-      document.getElementById("booking-loading").hidden = true;
-      document.getElementById("booking-content").hidden = false;
+      const [bookingResult, stopsResult] =
+        await Promise.all([
+          bookingQuery,
+          stopsQuery
+        ]);
+
+      if (
+        bookingResult.error ||
+        !bookingResult.data
+      ) {
+        throw (
+          bookingResult.error ||
+          new Error("Booking was not found.")
+        );
+      }
+
+      if (stopsResult.error) {
+        throw stopsResult.error;
+      }
+
+      renderBookingDetail(
+        bookingResult.data,
+        stopsResult.data || []
+      );
+
+      document.getElementById(
+        "booking-loading"
+      ).hidden = true;
+
+      document.getElementById(
+        "booking-content"
+      ).hidden = false;
+
     } catch (error) {
-      console.error("Unable to load booking detail:", error);
+
+      console.error(
+        "Unable to load booking detail:",
+        error
+      );
+
       showBookingError();
     }
   }

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <!-- PERFORMANCE CONNECTION WARMUP -->
+  <link rel="preconnect" href="https://nxvmdgayftipcmxvtkir.supabase.co" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://maps.googleapis.com" />
+  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://www.nycluxride.com" />
+<meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0a0a" />
   <title>Book a Ride | NYC Lux Ride</title>
@@ -1575,6 +1581,32 @@
       })({key:apiKey,v:"weekly"});
     }
 
+    async function ensureRouteLibraries(){
+      if(
+        mapsRuntime.Route &&
+        mapsRuntime.Map &&
+        mapsRuntime.LatLngBounds
+      ){
+        return;
+      }
+
+      const [routesLib, mapsLib, coreLib] =
+        await Promise.all([
+          google.maps.importLibrary("routes"),
+          google.maps.importLibrary("maps"),
+          google.maps.importLibrary("core")
+        ]);
+
+      mapsRuntime.Route =
+        routesLib.Route;
+
+      mapsRuntime.Map =
+        mapsLib.Map;
+
+      mapsRuntime.LatLngBounds =
+        coreLib.LatLngBounds;
+    }
+
     async function loadGoogleMaps(){
       const cfg=window.NYC_LUX_RIDE_CONFIG||{};
       const key=String(cfg.googleMapsApiKey||"").trim();
@@ -1591,19 +1623,16 @@
           installGoogleMapsBootstrap(key);
         }
 
-        const [placesLib, routesLib, mapsLib, coreLib] = await Promise.all([
-          google.maps.importLibrary("places"),
-          google.maps.importLibrary("routes"),
-          google.maps.importLibrary("maps"),
-          google.maps.importLibrary("core")
-        ]);
+        const placesLib =
+          await google.maps.importLibrary("places");
 
-        mapsRuntime.Place=placesLib.Place;
-        mapsRuntime.PlaceAutocompleteElement=placesLib.PlaceAutocompleteElement;
-        mapsRuntime.Route=routesLib.Route;
-        mapsRuntime.Map=mapsLib.Map;
-        mapsRuntime.LatLngBounds=coreLib.LatLngBounds;
-        mapsRuntime.ready=true;
+        mapsRuntime.Place =
+          placesLib.Place;
+
+        mapsRuntime.PlaceAutocompleteElement =
+          placesLib.PlaceAutocompleteElement;
+
+        mapsRuntime.ready = true;
 
         $("mapsSetupBanner").classList.remove("show");
         $("pickupMapStatus").textContent="Google Places is active. Search results are restricted to the United States.";
@@ -1854,6 +1883,7 @@
 
     async function computeRoute(){
       try{
+        await ensureRouteLibraries();
         $("previewStatus").textContent="Calculating route…";
         $("routeMapStatus").textContent="Google is calculating the driving route…";
 

@@ -426,6 +426,9 @@
 
       image.src = imageUrl;
       image.alt = vehicle.name;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.fetchPriority = "low";
 
       vehicleWrap.appendChild(image);
     } else {
@@ -2044,7 +2047,7 @@
         vehicle.code
       );
 
-      
+
       await saveAddonImages();
 await loadVehicles();
 
@@ -2877,7 +2880,8 @@ await loadVehicles();
         }
       );
 
-    setupPhotoControls();
+    setupPhotoControls();
+
 
 
     setupAddonImageControls();
@@ -2899,12 +2903,11 @@ await loadVehicles();
 
       setupControls();
 
-      await loadFeatureCatalog();
-
-
-
-      await loadAddonImages();
-      await loadVehicles();
+      await Promise.all([
+        loadFeatureCatalog(),
+        loadAddonImages(),
+        loadVehicles()
+      ]);
 
     } catch (error) {
       console.error(

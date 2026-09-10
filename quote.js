@@ -451,7 +451,27 @@
     currentPublicToken = token;
     const trip = quote.trip || {};
     renderQuote(quote);
-    await renderQuoteMap(trip);
+
+    const loadMapLater = () => {
+      renderQuoteMap(trip).catch(error => {
+        console.error(
+          "Deferred quote map error:",
+          error
+        );
+      });
+    };
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(
+        loadMapLater,
+        { timeout: 1000 }
+      );
+    } else {
+      window.setTimeout(
+        loadMapLater,
+        100
+      );
+    }
   }
 
   async function loadQuote(token) {
